@@ -1,15 +1,29 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { MapPinned } from 'lucide-react';
 import { useData } from '../context/DataContext';
 import LoadingSpinner from '../components/LoadingSpinner';
+import MapFragmentIcon from '../components/MapFragmentIcon';
 import YearBadge from '../components/YearBadge';
 import PartyBadge from '../components/PartyBadge';
 import { formatPct, slugify, allianceColor, partyColor } from '../utils/helpers';
+import { loadDistrictAsset } from '../utils/mapAssets';
 
 export default function Districts() {
   const { data, loading } = useData();
   const [selYear, setSelYear] = useState(2021);
   const [search, setSearch] = useState('');
+  const [districtGeometries, setDistrictGeometries] = useState(new Map());
+
+  useEffect(() => {
+    let cancelled = false;
+    loadDistrictAsset().then((geometries) => {
+      if (!cancelled) setDistrictGeometries(geometries);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   if (loading) return <LoadingSpinner />;
 
@@ -42,7 +56,10 @@ export default function Districts() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">Districts</h1>
+          <h1 className="inline-flex items-center gap-2 text-2xl font-bold text-white">
+            <MapPinned className="h-6 w-6 text-blue-400" />
+            <span>Districts</span>
+          </h1>
           <p className="text-slate-400 text-sm">38 districts · constituency-wise results</p>
         </div>
         <div className="sm:ml-auto flex flex-wrap gap-2">
@@ -67,7 +84,15 @@ export default function Districts() {
               className="bg-slate-900 border border-slate-800 hover:border-blue-700 rounded-xl p-4 transition-colors group">
               <div className="flex items-start justify-between mb-3">
                 <div>
-                  <h3 className="font-semibold text-white group-hover:text-blue-400 transition-colors">{district}</h3>
+                  <h3 className="inline-flex items-center gap-2 font-semibold text-white group-hover:text-blue-400 transition-colors">
+                    <MapFragmentIcon
+                      geometry={districtGeometries.get(district)}
+                      className="h-5 w-5 shrink-0"
+                      fill="#60a5fa"
+                      background="#111827"
+                    />
+                    <span>{district}</span>
+                  </h3>
                   <p className="text-xs text-slate-500">{stats?.seats || 0} constituencies</p>
                 </div>
                 {selYear === 2026 && d26 ? (
