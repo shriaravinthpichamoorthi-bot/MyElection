@@ -1,16 +1,17 @@
-import { YEAR_COLORS } from '../utils/helpers';
+import { motion } from 'framer-motion';
 
 export default function YearBadge({ year, onClick, active }) {
-  const color = YEAR_COLORS[year] || '#64748b';
   return (
-    <button
+    <motion.button
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.96 }}
       onClick={onClick}
-      style={{ borderColor: active ? color : 'transparent', color: active ? color : undefined }}
-      className={`px-3 py-1 rounded-full text-xs font-medium border-2 transition-all ${
-        active ? 'bg-slate-800' : 'bg-slate-800/50 text-slate-400 hover:text-slate-200'
-      }`}
-    >
+      className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
+        active
+          ? 'year-pill-active text-white shadow-lg'
+          : 'bg-white/5 text-slate-400 hover:text-white border border-white/8'
+      }`}>
       {year}
-    </button>
+    </motion.button>
   );
 }
