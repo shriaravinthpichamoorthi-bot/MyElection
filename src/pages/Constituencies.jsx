@@ -1,12 +1,15 @@
-import { useState, useMemo } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { Building2 } from 'lucide-react';
 import { useData } from '../context/DataContext';
 import LoadingSpinner from '../components/LoadingSpinner';
+import MapFragmentIcon from '../components/MapFragmentIcon';
 import YearBadge from '../components/YearBadge';
 import PartyBadge from '../components/PartyBadge';
 import SortTh from '../components/SortTh';
 import { useSortable } from '../hooks/useSortable';
 import { formatPct, marginClass, slugify } from '../utils/helpers';
+import { loadConstituencyAsset } from '../utils/mapAssets';
 
 export default function Constituencies() {
   const { data, loading } = useData();
@@ -14,6 +17,17 @@ export default function Constituencies() {
   const [search, setSearch] = useState('');
   const [filterDistrict, setFilterDistrict] = useState('');
   const [filterParty, setFilterParty] = useState('');
+  const [constituencyGeometries, setConstituencyGeometries] = useState(new Map());
+
+  useEffect(() => {
+    let cancelled = false;
+    loadConstituencyAsset().then((geometries) => {
+      if (!cancelled) setConstituencyGeometries(geometries);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
 
   if (loading) return <LoadingSpinner />;
@@ -42,7 +56,10 @@ export default function Constituencies() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">All Constituencies</h1>
+          <h1 className="inline-flex items-center gap-2 text-2xl font-bold text-white">
+            <Building2 className="h-6 w-6 text-blue-400" />
+            <span>All Constituencies</span>
+          </h1>
           <p className="text-slate-400 text-sm">234 assembly segments across 38 districts</p>
         </div>
         <div className="sm:ml-auto flex flex-wrap gap-2">
@@ -94,8 +111,14 @@ export default function Constituencies() {
                     <td className="px-3 py-2.5 text-slate-500 text-xs">{r.constituency_no}</td>
                     <td className="px-3 py-2.5">
                       <Link to={`/constituency/${slugify(r.name)}`}
-                        className="text-blue-400 hover:text-blue-300 font-medium whitespace-nowrap">
-                        {r.name}
+                        className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 font-medium whitespace-nowrap">
+                        <MapFragmentIcon
+                          geometry={constituencyGeometries.get(r.constituency_no)}
+                          className="h-4 w-4 shrink-0"
+                          fill="#60a5fa"
+                          background="#111827"
+                        />
+                        <span>{r.name}</span>
                       </Link>
                     </td>
                     <td className="px-3 py-2.5">
