@@ -1,46 +1,55 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import {
   LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell,
 } from 'recharts';
 import { useData } from '../context/DataContext';
 import LoadingSpinner from '../components/LoadingSpinner';
+import MapFragmentIcon from '../components/MapFragmentIcon';
 import PartyBadge from '../components/PartyBadge';
 import SortTh from '../components/SortTh';
 import { useSortable } from '../hooks/useSortable';
 import { formatNumber, formatPct, partyColor, marginClass, slugify, YEAR_COLORS } from '../utils/helpers';
+import { loadConstituencyAsset } from '../utils/mapAssets';
 
 export default function ConstituencyDetail() {
   const { slug } = useParams();
   const { data, loading } = useData();
-  const [candYear, setCandYear] = useState(null); // null = most recent with candidates
+  const [candYear, setCandYear] = useState(null);
+  const [constituencyGeometry, setConstituencyGeometry] = useState(null);
 
-  if (loading) return <LoadingSpinner />;
+  const byConstituency = data?.byConstituency || {};
+  const constituencies = data?.constituencies || [];
+  const partyColors = data?.partyColors || {};
+  const name = useMemo(() => constituencies.find((c) => slugify(c) === slug) || null, [constituencies, slug]);
+  const history = useMemo(
+    () => (name ? [...(byConstituency[name] || [])].sort((a, b) => a.year - b.year) : []),
+    [byConstituency, name]
+  );
+  const latest = history[history.length - 1] || null;
 
-  const { byConstituency, constituencies, partyColors, incumbencyData, swingData } = data;
+  useEffect(() => {
+    let cancelled = false;
+    loadConstituencyAsset().then((geometries) => {
+      if (!cancelled) setConstituencyGeometry(latest?.constituency_no ? geometries.get(latest.constituency_no) || null : null);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [latest?.constituency_no]);
 
-  const name = constituencies.find(c => slugify(c) === slug);
-  if (!name) return <div className="text-red-400 p-8">Constituency not found.</div>;
-
-  const history = (byConstituency[name] || []).sort((a, b) => a.year - b.year);
-  const latest = history[history.length - 1];
-
-  const yearsWithCandidates = history.filter(r => r.candidates && r.candidates.length > 0);
+  const yearsWithCandidates = history.filter((r) => r.candidates && r.candidates.length > 0);
   const selectedCandYear = candYear ?? (yearsWithCandidates[yearsWithCandidates.length - 1]?.year ?? null);
-  const selectedRec = history.find(r => r.year === selectedCandYear);
+  const selectedRec = history.find((r) => r.year === selectedCandYear) || null;
   const candidates = selectedRec?.candidates || [];
 
-  // Charts
-  const turnoutTrend = history.map(r => ({ year: r.year, turnout: r.turnout_pct }));
-  const marginTrend = history.filter(r => r.margin_pct != null).map(r => ({
-    year: r.year, margin: r.margin_pct,
-  }));
-
-  const incRecs = incumbencyData[name] || [];
+  const turnoutTrend = history.map((r) => ({ year: r.year, turnout: r.turnout_pct }));
+  const marginTrend = history.filter((r) => r.margin_pct != null).map((r) => ({ year: r.year, margin: r.margin_pct }));
+  if (loading) return <LoadingSpinner />;
+  if (!name) return <div className="text-red-400 p-8">Constituency not found.</div>;
 
   return (
     <div className="space-y-6">
-      {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-slate-400">
         <Link to="/constituencies" className="hover:text-blue-400">Constituencies</Link>
         <span>/</span>
@@ -53,11 +62,13 @@ export default function ConstituencyDetail() {
         <span className="text-white">{name}</span>
       </div>
 
-      {/* Header */}
       <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-white">{name}</h1>
+            <h1 className="inline-flex items-center gap-3 text-2xl font-bold text-white">
+              <MapFragmentIcon geometry={constituencyGeometry} className="h-8 w-8 shrink-0" fill="#60a5fa" background="#111827" />
+              <span>{name}</span>
+            </h1>
             <div className="flex flex-wrap items-center gap-3 mt-2 text-sm text-slate-400">
               {latest?.district && <span>📍 {latest.district}</span>}
               <span>Category: {latest?.category}</span>
@@ -87,20 +98,24 @@ export default function ConstituencyDetail() {
         </div>
       </div>
 
-      {/* Charts */}
       <div className="grid lg:grid-cols-2 gap-6">
         <div className="bg-slate-900 rounded-xl p-5 border border-slate-800">
-          <h3 className="text-sm font-semibold text-slate-300 mb-4">Voter Turnout (2001–2026)</h3>
+          <h3 className="text-sm font-semibold text-slate-300 mb-4">Voter Turnout (2001-2026)</h3>
           <ResponsiveContainer width="100%" height={200}>
             <LineChart data={turnoutTrend}>
               <XAxis dataKey="year" tick={{ fill: '#94a3b8', fontSize: 11 }} />
               <YAxis domain={['auto', 'auto']} tick={{ fill: '#94a3b8', fontSize: 11 }} unit="%" />
-              <Tooltip contentStyle={{ background: '#1e293b', border: '1px solid #334155', color: '#e2e8f0' }}
-                formatter={v => [formatPct(v), 'Turnout']} />
-              <Line type="monotone" dataKey="turnout" stroke="#3b82f6" strokeWidth={2}
-                dot={({ cx, cy, payload }) => (
-                  <circle key={payload.year} cx={cx} cy={cy} r={4} fill={YEAR_COLORS[payload.year] || '#3b82f6'} />
-                )} />
+              <Tooltip
+                contentStyle={{ background: '#1e293b', border: '1px solid #334155', color: '#e2e8f0' }}
+                formatter={(v) => [formatPct(v), 'Turnout']}
+              />
+              <Line
+                type="monotone"
+                dataKey="turnout"
+                stroke="#3b82f6"
+                strokeWidth={2}
+                dot={({ cx, cy, payload }) => <circle key={payload.year} cx={cx} cy={cy} r={4} fill={YEAR_COLORS[payload.year] || '#3b82f6'} />}
+              />
             </LineChart>
           </ResponsiveContainer>
         </div>
@@ -112,8 +127,10 @@ export default function ConstituencyDetail() {
               <BarChart data={marginTrend}>
                 <XAxis dataKey="year" tick={{ fill: '#94a3b8', fontSize: 11 }} />
                 <YAxis tick={{ fill: '#94a3b8', fontSize: 11 }} unit="%" />
-                <Tooltip contentStyle={{ background: '#1e293b', border: '1px solid #334155', color: '#e2e8f0' }}
-                  formatter={v => [v.toFixed(1) + '%', 'Margin']} />
+                <Tooltip
+                  contentStyle={{ background: '#1e293b', border: '1px solid #334155', color: '#e2e8f0' }}
+                  formatter={(v) => [`${v.toFixed(1)}%`, 'Margin']}
+                />
                 <Bar dataKey="margin" radius={[4, 4, 0, 0]}>
                   {marginTrend.map((d, i) => (
                     <Cell key={i} fill={d.margin < 3 ? '#ef4444' : d.margin < 8 ? '#f59e0b' : '#10b981'} />
@@ -121,54 +138,60 @@ export default function ConstituencyDetail() {
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
-          ) : <p className="text-slate-500 text-sm">No margin data available</p>}
+          ) : (
+            <p className="text-slate-500 text-sm">No margin data available</p>
+          )}
         </div>
       </div>
 
-      {/* Historical winners */}
-      <HistoricalTable history={history} incRecs={incRecs} partyColors={partyColors} />
+      <HistoricalTable history={history} partyColors={partyColors} />
 
-      {/* Unified candidate table with year switcher */}
       {yearsWithCandidates.length > 0 && (
         <div className="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
           <div className="px-5 py-3 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center gap-3">
             <h3 className="font-semibold text-white">All Candidates</h3>
             <div className="flex flex-wrap gap-1.5 sm:ml-auto">
-              {yearsWithCandidates.map(r => (
-                <button key={r.year} onClick={() => setCandYear(r.year)}
+              {yearsWithCandidates.map((r) => (
+                <button
+                  key={r.year}
+                  onClick={() => setCandYear(r.year)}
                   className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
                     selectedCandYear === r.year
                       ? 'bg-blue-600 text-white'
                       : 'bg-slate-800 text-slate-400 hover:text-white'
-                  }`}>
+                  }`}
+                >
                   {r.year}
                 </button>
               ))}
             </div>
             <span className="text-xs text-slate-500 sm:ml-0">{candidates.length} candidates</span>
           </div>
-          <CandidateTable candidates={candidates} partyColors={partyColors} year={selectedCandYear} rec={selectedRec} />
+          <CandidateTable candidates={candidates} partyColors={partyColors} rec={selectedRec} />
         </div>
       )}
     </div>
   );
 }
 
-function HistoricalTable({ history, incRecs, partyColors }) {
+function HistoricalTable({ history, partyColors }) {
   const [search, setSearch] = useState('');
   const { sorted, col, dir, toggle } = useSortable(history, 'year', 'desc');
 
   const filtered = search
-    ? sorted.filter(r => r.winner_name?.toLowerCase().includes(search.toLowerCase()) || r.winner_party?.toLowerCase().includes(search.toLowerCase()))
+    ? sorted.filter((r) => r.winner_name?.toLowerCase().includes(search.toLowerCase()) || r.winner_party?.toLowerCase().includes(search.toLowerCase()))
     : sorted;
 
   return (
     <div className="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
       <div className="px-5 py-3 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center gap-3">
         <h3 className="font-semibold text-white">Historical Winners</h3>
-        <input value={search} onChange={e => setSearch(e.target.value)}
-          placeholder="Filter by winner or party…"
-          className="sm:ml-auto px-3 py-1.5 bg-slate-800 border border-slate-700 rounded text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 w-48" />
+        <input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Filter by winner or party..."
+          className="sm:ml-auto px-3 py-1.5 bg-slate-800 border border-slate-700 rounded text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 w-48"
+        />
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
@@ -190,7 +213,6 @@ function HistoricalTable({ history, incRecs, partyColors }) {
           <tbody>
             {filtered.map((r, i) => {
               const mc = marginClass(r.margin_pct);
-              const inc = incRecs.find(x => x.year === r.year);
               return (
                 <tr key={i} className="border-b border-slate-800/50 hover:bg-slate-800/30">
                   <td className="px-3 py-3 font-semibold text-slate-200">{r.year}</td>
@@ -232,20 +254,23 @@ function HistoricalTable({ history, incRecs, partyColors }) {
   );
 }
 
-function CandidateTable({ candidates, partyColors, year, rec }) {
+function CandidateTable({ candidates, partyColors, rec }) {
   const [search, setSearch] = useState('');
   const { sorted, col, dir, toggle } = useSortable(candidates, 'rank', 'asc');
 
   const filtered = search
-    ? sorted.filter(c => c.name.toLowerCase().includes(search.toLowerCase()) || c.party?.toLowerCase().includes(search.toLowerCase()))
+    ? sorted.filter((c) => c.name.toLowerCase().includes(search.toLowerCase()) || c.party?.toLowerCase().includes(search.toLowerCase()))
     : sorted;
 
   return (
     <>
       <div className="px-5 py-2 flex items-center gap-3 border-b border-slate-800/50">
-        <input value={search} onChange={e => setSearch(e.target.value)}
-          placeholder="Filter candidate or party…"
-          className="px-3 py-1.5 bg-slate-800 border border-slate-700 rounded text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 w-48" />
+        <input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Filter candidate or party..."
+          className="px-3 py-1.5 bg-slate-800 border border-slate-700 rounded text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 w-48"
+        />
         {rec && (
           <span className="text-xs text-slate-500 ml-auto">
             Total polled: {formatNumber(rec.votes_polled)} · Turnout: {formatPct(rec.turnout_pct)}
@@ -270,8 +295,7 @@ function CandidateTable({ candidates, partyColors, year, rec }) {
               <tr key={ci} className={`border-b border-slate-800/40 hover:bg-slate-800/30 ${c.rank === 1 ? 'bg-green-900/10' : ''}`}>
                 <td className="px-3 py-2.5 text-slate-400 font-semibold">{c.rank}</td>
                 <td className="px-3 py-2.5">
-                  <Link to={`/candidate/${slugify(c.name)}`}
-                    className={`hover:text-blue-400 ${c.rank === 1 ? 'text-green-400 font-semibold' : 'text-slate-200'}`}>
+                  <Link to={`/candidate/${slugify(c.name)}`} className={`hover:text-blue-400 ${c.rank === 1 ? 'text-green-400 font-semibold' : 'text-slate-200'}`}>
                     {c.name}
                   </Link>
                 </td>
@@ -282,10 +306,13 @@ function CandidateTable({ candidates, partyColors, year, rec }) {
                 <td className="px-3 py-2.5">
                   <div className="flex items-center gap-2">
                     <div className="w-16 bg-slate-800 rounded-full h-1.5">
-                      <div className="h-1.5 rounded-full" style={{
-                        width: `${Math.min(c.vote_pct || 0, 100)}%`,
-                        background: partyColor(c.party, partyColors),
-                      }} />
+                      <div
+                        className="h-1.5 rounded-full"
+                        style={{
+                          width: `${Math.min(c.vote_pct || 0, 100)}%`,
+                          background: partyColor(c.party, partyColors),
+                        }}
+                      />
                     </div>
                     <span className="text-slate-300 text-xs">{formatPct(c.vote_pct)}</span>
                   </div>
@@ -293,7 +320,9 @@ function CandidateTable({ candidates, partyColors, year, rec }) {
               </tr>
             ))}
             {filtered.length === 0 && (
-              <tr><td colSpan={7} className="px-4 py-6 text-center text-slate-500 text-sm">No candidates match filter</td></tr>
+              <tr>
+                <td colSpan={7} className="px-4 py-6 text-center text-slate-500 text-sm">No candidates match filter</td>
+              </tr>
             )}
           </tbody>
         </table>
