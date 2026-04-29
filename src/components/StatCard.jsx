@@ -1,64 +1,37 @@
-import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 
-const colorMap = {
-  blue:   { icon: 'text-blue-400',   glow: 'rgba(59,130,246,0.15)',  border: 'rgba(59,130,246,0.2)',  bg: 'rgba(59,130,246,0.06)'  },
-  green:  { icon: 'text-emerald-400', glow: 'rgba(52,211,153,0.15)',  border: 'rgba(52,211,153,0.2)',  bg: 'rgba(52,211,153,0.06)'  },
-  red:    { icon: 'text-red-400',     glow: 'rgba(248,113,113,0.15)', border: 'rgba(248,113,113,0.2)', bg: 'rgba(248,113,113,0.06)' },
-  yellow: { icon: 'text-amber-400',   glow: 'rgba(251,191,36,0.15)',  border: 'rgba(251,191,36,0.2)',  bg: 'rgba(251,191,36,0.06)'  },
-  purple: { icon: 'text-violet-400',  glow: 'rgba(167,139,250,0.15)', border: 'rgba(167,139,250,0.2)', bg: 'rgba(167,139,250,0.06)' },
-  pink:   { icon: 'text-pink-400',    glow: 'rgba(244,114,182,0.15)', border: 'rgba(244,114,182,0.2)', bg: 'rgba(244,114,182,0.06)' },
-  indigo: { icon: 'text-indigo-400',  glow: 'rgba(99,102,241,0.15)',  border: 'rgba(99,102,241,0.2)',  bg: 'rgba(99,102,241,0.06)'  },
+const C = {
+  blue:   { bg:'#0c1a2e', border:'#1d3a5c', text:'#60a5fa', icon:'rgba(59,130,246,0.2)'  },
+  green:  { bg:'#0a1f18', border:'#14402e', text:'#34d399', icon:'rgba(52,211,153,0.2)'  },
+  red:    { bg:'#1f0a0a', border:'#4a1515', text:'#f87171', icon:'rgba(248,113,113,0.2)' },
+  yellow: { bg:'#1a1300', border:'#3d2e00', text:'#fbbf24', icon:'rgba(251,191,36,0.2)'  },
+  purple: { bg:'#130d2e', border:'#2d1f5e', text:'#a78bfa', icon:'rgba(167,139,250,0.2)' },
+  pink:   { bg:'#1f0d1a', border:'#4a1a3a', text:'#f472b6', icon:'rgba(244,114,182,0.2)' },
+  indigo: { bg:'#0d0f2e', border:'#1e2260', text:'#818cf8', icon:'rgba(129,140,248,0.2)' },
 };
 
-export default function StatCard({ label, value, sub, color = 'blue', icon: Icon, trend }) {
-  const c = colorMap[color] || colorMap.blue;
-  const [visible, setVisible] = useState(false);
-  const ref = useRef();
-
-  useEffect(() => {
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setVisible(true); }, { threshold: 0.2 });
-    if (ref.current) obs.observe(ref.current);
-    return () => obs.disconnect();
-  }, []);
-
+export default function StatCard({ label, value, sub, color = 'blue', icon: Icon }) {
+  const c = C[color] || C.blue;
   return (
-    <motion.div ref={ref}
-      initial={{ opacity: 0, y: 16 }}
-      animate={visible ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
-      whileHover={{ y: -2, transition: { duration: 0.2 } }}
-      className="relative rounded-2xl p-5 overflow-hidden cursor-default"
-      style={{
-        background: `linear-gradient(135deg, ${c.bg}, rgba(13,22,48,0.5))`,
-        border: `1px solid ${c.border}`,
-        boxShadow: `0 4px 24px ${c.glow}`,
-      }}>
-      {/* Subtle top glow line */}
-      <div className="absolute top-0 left-0 right-0 h-px"
-        style={{ background: `linear-gradient(90deg, transparent, ${c.border}, transparent)` }} />
+    <motion.div
+      initial={{ opacity:0, y:12 }}
+      whileInView={{ opacity:1, y:0 }}
+      viewport={{ once:true }}
+      whileHover={{ y:-3 }}
+      transition={{ duration:0.25 }}
+      style={{ background:c.bg, border:`1px solid ${c.border}`, borderRadius:14, padding:'18px 20px', position:'relative', overflow:'hidden' }}>
+      {/* top glow line */}
+      <div style={{ position:'absolute', top:0, left:0, right:0, height:1, background:`linear-gradient(90deg, transparent, ${c.border}, transparent)` }} />
 
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-500 mb-2">{label}</p>
-          <motion.p
-            key={value}
-            initial={{ opacity: 0, y: 6 }}
-            animate={visible ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.35, delay: 0.1 }}
-            className="text-2xl font-bold text-white leading-none font-['Space_Grotesk',sans-serif]">
-            {value}
-          </motion.p>
-          {sub && <p className="text-xs text-slate-500 mt-1.5">{sub}</p>}
-          {trend != null && (
-            <p className={`text-xs mt-1.5 font-medium ${trend > 0 ? 'text-emerald-400' : trend < 0 ? 'text-red-400' : 'text-slate-500'}`}>
-              {trend > 0 ? '↑' : trend < 0 ? '↓' : '—'} {Math.abs(trend).toFixed(1)}%
-            </p>
-          )}
+      <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:12 }}>
+        <div style={{ minWidth:0 }}>
+          <p style={{ fontSize:10, fontWeight:700, textTransform:'uppercase', letterSpacing:'0.1em', color:'#475569', marginBottom:8 }}>{label}</p>
+          <p style={{ fontSize:22, fontWeight:700, color:c.text, lineHeight:1, fontFamily:"'Space Grotesk',sans-serif" }}>{value ?? '—'}</p>
+          {sub && <p style={{ fontSize:11, color:'#475569', marginTop:6 }}>{sub}</p>}
         </div>
         {Icon && (
-          <div className="p-2.5 rounded-xl shrink-0" style={{ background: c.bg, border: `1px solid ${c.border}` }}>
-            <Icon className={`w-5 h-5 ${c.icon}`} />
+          <div style={{ padding:10, borderRadius:10, background:c.icon, border:`1px solid ${c.border}`, flexShrink:0 }}>
+            <Icon size={18} style={{ color:c.text }} />
           </div>
         )}
       </div>

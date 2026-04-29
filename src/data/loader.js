@@ -2,9 +2,13 @@ let _cache = null;
 
 export async function loadData() {
   if (_cache) return _cache;
-  const res = await fetch('/output.json');
-  const raw = await res.json();
-  _cache = processData(raw);
+  const [rawRes, cand2026Res] = await Promise.all([
+    fetch('/output.json'),
+    fetch('/candidates_2026.json').catch(() => null),
+  ]);
+  const raw = await rawRes.json();
+  const cand2026 = cand2026Res ? await cand2026Res.json().catch(() => null) : null;
+  _cache = processData(raw, cand2026);
   return _cache;
 }
 
@@ -118,7 +122,7 @@ const PRE2008_NO_TO_DISTRICT = {
   231:'Kanniyakumari', 232:'Kanniyakumari', 233:'Kanniyakumari', 234:'Kanniyakumari',
 };
 
-function processData(raw) {
+function processData(raw, cand2026 = null) {
   const cd = raw.constituency_data;
 
   // Step 1: Build 2026 constituency_no → district map (post-2008 delimitation reference)
@@ -353,6 +357,22 @@ function processData(raw) {
       });
     });
   });
+
+  // Inject 2026 candidates from candidates_2026.json
+  if (cand2026?.constituencies) {
+    const c26 = cand2026.constituencies;
+    cd.forEach(r => {
+      if (r.year === 2026 && c26[r.name]) {
+        r.candidates = c26[r.name].map((c, i) => ({
+          rank: null, name: c.name, sex: c.sex || null,
+          party: c.party, alliance: c.alliance || null,
+          votes: null, vote_pct: null,
+          designation: c.designation || null,
+          general_votes: null, postal_votes: null,
+        }));
+      }
+    });
+  }
 
   // Fix stateSummary constituency counts (raw data has stale counts for some years)
   const stateSummary = (raw.state_summary || []).map(s => ({

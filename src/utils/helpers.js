@@ -40,6 +40,14 @@ export function slugify(str) {
   return (str || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
 
+export function formatName(str) {
+  if (!str) return str;
+  const tokens = str.replace(/[.,]/g, ' ').replace(/\s+/g, ' ').trim().split(' ').filter(Boolean);
+  const initials = tokens.filter(t => t.length === 1).map(t => t.toUpperCase());
+  const words = tokens.filter(t => t.length > 1).map(t => t.charAt(0).toUpperCase() + t.slice(1).toLowerCase());
+  return [...initials, ...words].join(' ');
+}
+
 export const YEARS = [2001, 2006, 2011, 2016, 2021, 2026];
 
 export const YEAR_COLORS = {

@@ -2,15 +2,9 @@ import { motion } from 'framer-motion';
 
 export default function YearBadge({ year, onClick, active }) {
   return (
-    <motion.button
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.96 }}
-      onClick={onClick}
-      className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
-        active
-          ? 'year-pill-active text-white shadow-lg'
-          : 'bg-white/5 text-slate-400 hover:text-white border border-white/8'
-      }`}>
+    <motion.button whileTap={{ scale:0.94 }} onClick={onClick}
+      className={active ? 'pill-active' : 'pill-idle'}
+      style={{ padding:'7px 14px', borderRadius:10, fontSize:12, fontWeight:600, cursor:'pointer', fontFamily:'inherit' }}>
       {year}
     </motion.button>
   );
