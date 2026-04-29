@@ -1,48 +1,41 @@
 import { motion } from 'framer-motion';
 
-function SkeletonBlock({ className }) {
-  return <div className={`skeleton ${className}`} />;
+function Sk({ w, h = 20 }) {
+  return <div className="skeleton" style={{ width:w, height:h, borderRadius:8 }} />;
 }
 
 export default function LoadingSpinner({ message = 'Loading election data…' }) {
   return (
-    <div className="space-y-6 animate-pulse">
-      {/* Header skeleton */}
-      <div className="flex items-center justify-between">
-        <div className="space-y-2">
-          <SkeletonBlock className="h-8 w-64" />
-          <SkeletonBlock className="h-4 w-40" />
+    <div style={{ display:'flex', flexDirection:'column', gap:24 }}>
+      <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+        <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+          <Sk w={260} h={32} />
+          <Sk w={180} h={14} />
         </div>
-        <div className="flex gap-2">
-          {[...Array(6)].map((_, i) => <SkeletonBlock key={i} className="h-8 w-14 rounded-full" />)}
+        <div style={{ display:'flex', gap:8 }}>
+          {[...Array(6)].map((_,i) => <Sk key={i} w={56} h={32} />)}
         </div>
       </div>
-
-      {/* Stat cards skeleton */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-        {[...Array(6)].map((_, i) => <SkeletonBlock key={i} className="h-24 rounded-2xl" />)}
+      <div style={{ display:'grid', gridTemplateColumns:'repeat(6,1fr)', gap:12 }}>
+        {[...Array(6)].map((_,i) => <Sk key={i} h={88} />)}
       </div>
-
-      {/* Chart skeletons */}
-      <div className="grid lg:grid-cols-2 gap-6">
-        {[...Array(2)].map((_, i) => <SkeletonBlock key={i} className="h-56 rounded-2xl" />)}
+      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:16 }}>
+        <Sk h={220} />
+        <Sk h={220} />
       </div>
-      <div className="grid lg:grid-cols-2 gap-6">
-        {[...Array(2)].map((_, i) => <SkeletonBlock key={i} className="h-64 rounded-2xl" />)}
+      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:16 }}>
+        <Sk h={240} />
+        <Sk h={240} />
       </div>
-
-      {/* Loading label */}
-      <motion.div
-        className="flex items-center justify-center gap-3 py-4"
-        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}>
-        <div className="flex gap-1">
-          {[0, 1, 2].map(i => (
-            <motion.div key={i} className="w-1.5 h-1.5 rounded-full bg-indigo-500"
-              animate={{ y: [0, -6, 0] }}
-              transition={{ duration: 0.6, delay: i * 0.15, repeat: Infinity }} />
+      <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ delay:0.4 }}
+        style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:10, paddingTop:8 }}>
+        <div style={{ display:'flex', gap:5 }}>
+          {[0,1,2].map(i => (
+            <motion.span key={i} style={{ width:6, height:6, borderRadius:'50%', background:'#6366f1', display:'block' }}
+              animate={{ y:[0,-8,0] }} transition={{ duration:0.6, delay:i*0.15, repeat:Infinity }} />
           ))}
         </div>
-        <span className="text-sm text-slate-500">{message}</span>
+        <span style={{ fontSize:13, color:'#475569' }}>{message}</span>
       </motion.div>
     </div>
   );

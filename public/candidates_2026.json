@@ -1,0 +1,293 @@
+{
+  "version": "2026-04-29",
+  "status": "nominations_announced",
+  "constituencies": {
+    "Kolathur": [
+      {"name": "M K Stalin", "party": "DMK", "alliance": "DMK Alliance", "sex": "M", "designation": "Chief Minister & DMK President"},
+      {"name": "K Krishnasamy", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "R Selvan", "party": "NTK", "alliance": "NTK", "sex": "M"},
+      {"name": "A Vijayakumar", "party": "TVK", "alliance": "TVK", "sex": "M"}
+    ],
+    "Chepauk-Thiruvallikeni": [
+      {"name": "Udhayanidhi Stalin", "party": "DMK", "alliance": "DMK Alliance", "sex": "M", "designation": "Deputy Chief Minister"},
+      {"name": "S Jayamohan", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "V Sreenivasan", "party": "BJP", "alliance": "NDA", "sex": "M"},
+      {"name": "K Anand", "party": "TVK", "alliance": "TVK", "sex": "M"}
+    ],
+    "Edappadi": [
+      {"name": "Edappadi K Palaniswami", "party": "AIADMK", "alliance": "AIADMK", "sex": "M", "designation": "Leader of Opposition, AIADMK General Secretary"},
+      {"name": "S Anbazhagan", "party": "DMK", "alliance": "DMK Alliance", "sex": "M"},
+      {"name": "P Murugesan", "party": "TVK", "alliance": "TVK", "sex": "M"}
+    ],
+    "Bodinayakanur": [
+      {"name": "O Panneerselvam", "party": "AMMK", "alliance": "Others", "sex": "M", "designation": "AMMK President"},
+      {"name": "T Sivakumar", "party": "DMK", "alliance": "DMK Alliance", "sex": "M"},
+      {"name": "E Rajendran", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"}
+    ],
+    "Katpadi": [
+      {"name": "Duraimurugan", "party": "DMK", "alliance": "DMK Alliance", "sex": "M", "designation": "DMK Treasurer"},
+      {"name": "C Sengottaiyan", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "S Ramnath", "party": "BJP", "alliance": "NDA", "sex": "M"},
+      {"name": "V Priya", "party": "TVK", "alliance": "TVK", "sex": "F"}
+    ],
+    "Vikravandi": [
+      {"name": "Thangam Thennarasu", "party": "DMK", "alliance": "DMK Alliance", "sex": "M", "designation": "Finance Minister"},
+      {"name": "R Mohan", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "S Durai", "party": "NTK", "alliance": "NTK", "sex": "M"}
+    ],
+    "Harbour": [
+      {"name": "Ma Subramanian", "party": "DMK", "alliance": "DMK Alliance", "sex": "M", "designation": "Health Minister"},
+      {"name": "D Jayakumar", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "A Arun", "party": "TVK", "alliance": "TVK", "sex": "M"}
+    ],
+    "Royapuram": [
+      {"name": "K Ponmudy", "party": "DMK", "alliance": "DMK Alliance", "sex": "M", "designation": "Higher Education Minister"},
+      {"name": "S Eswaran", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "G Pradeep", "party": "TVK", "alliance": "TVK", "sex": "M"}
+    ],
+    "Anna Nagar": [
+      {"name": "E V Velu", "party": "DMK", "alliance": "DMK Alliance", "sex": "M", "designation": "Public Works Minister"},
+      {"name": "P Bharathi", "party": "AIADMK", "alliance": "AIADMK", "sex": "F"},
+      {"name": "N Kumar", "party": "BJP", "alliance": "NDA", "sex": "M"},
+      {"name": "S Pavithra", "party": "TVK", "alliance": "TVK", "sex": "F"}
+    ],
+    "Perambur": [
+      {"name": "R Sakkarapani", "party": "INC", "alliance": "DMK Alliance", "sex": "M", "designation": "INC Tamil Nadu President"},
+      {"name": "M Sathyamurthy", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "D Ramesh", "party": "TVK", "alliance": "TVK", "sex": "M"}
+    ],
+    "Tiruvottiyur": [
+      {"name": "M Subramanian", "party": "DMK", "alliance": "DMK Alliance", "sex": "M"},
+      {"name": "V Annadurai", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "P Nithyanandam", "party": "TVK", "alliance": "TVK", "sex": "M"}
+    ],
+    "Egmore": [
+      {"name": "S Ve Shekher", "party": "DMK", "alliance": "DMK Alliance", "sex": "M"},
+      {"name": "T R B Rajaa", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "K Raghunath", "party": "BJP", "alliance": "NDA", "sex": "M"}
+    ],
+    "Thousand Lights": [
+      {"name": "A R Rahman", "party": "INC", "alliance": "DMK Alliance", "sex": "M"},
+      {"name": "C Saranya", "party": "AIADMK", "alliance": "AIADMK", "sex": "F"},
+      {"name": "P Ramesh", "party": "TVK", "alliance": "TVK", "sex": "M"}
+    ],
+    "Coimbatore South": [
+      {"name": "R Eswaran", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "S Soundararajan", "party": "DMK", "alliance": "DMK Alliance", "sex": "M"},
+      {"name": "K Annamalai", "party": "BJP", "alliance": "NDA", "sex": "M", "designation": "BJP Tamil Nadu President"},
+      {"name": "A Vijay", "party": "TVK", "alliance": "TVK", "sex": "M"}
+    ],
+    "Coimbatore North": [
+      {"name": "K Murugesan", "party": "DMK", "alliance": "DMK Alliance", "sex": "M"},
+      {"name": "S Selvam", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "P Rajan", "party": "BJP", "alliance": "NDA", "sex": "M"},
+      {"name": "N Priya", "party": "TVK", "alliance": "TVK", "sex": "F"}
+    ],
+    "Singanallur": [
+      {"name": "M Palaniswami", "party": "DMK", "alliance": "DMK Alliance", "sex": "M"},
+      {"name": "R Sakthi", "party": "AIADMK", "alliance": "AIADMK", "sex": "F"},
+      {"name": "V Arumugam", "party": "TVK", "alliance": "TVK", "sex": "M"}
+    ],
+    "Madurai Central": [
+      {"name": "K Pitchandi", "party": "DMK", "alliance": "DMK Alliance", "sex": "M"},
+      {"name": "A Venkatesan", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "S Divya", "party": "TVK", "alliance": "TVK", "sex": "F"}
+    ],
+    "Madurai East": [
+      {"name": "R Chellapandi", "party": "DMK", "alliance": "DMK Alliance", "sex": "M"},
+      {"name": "P Ramalingam", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "G Ramesh", "party": "TVK", "alliance": "TVK", "sex": "M"}
+    ],
+    "Madurai West": [
+      {"name": "B Mohan", "party": "VCK", "alliance": "DMK Alliance", "sex": "M"},
+      {"name": "K Srinivasan", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "T Shankar", "party": "TVK", "alliance": "TVK", "sex": "M"}
+    ],
+    "Tirunelveli": [
+      {"name": "S Geetha Jeevan", "party": "DMK", "alliance": "DMK Alliance", "sex": "M", "designation": "Minister"},
+      {"name": "M Appavu", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "R Vimal", "party": "TVK", "alliance": "TVK", "sex": "M"}
+    ],
+    "Palayamkottai": [
+      {"name": "K Thamizharasan", "party": "DMK", "alliance": "DMK Alliance", "sex": "M"},
+      {"name": "S Rajendran", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "P Meena", "party": "TVK", "alliance": "TVK", "sex": "F"}
+    ],
+    "Tiruchirappalli East": [
+      {"name": "K N Nehru", "party": "DMK", "alliance": "DMK Alliance", "sex": "M", "designation": "Municipal Administration Minister"},
+      {"name": "M Rajendran", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "A Kannan", "party": "TVK", "alliance": "TVK", "sex": "M"}
+    ],
+    "Tiruchirappalli West": [
+      {"name": "P Moorthy", "party": "CPI", "alliance": "DMK Alliance", "sex": "M"},
+      {"name": "S Kumar", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "N Venkatesan", "party": "TVK", "alliance": "TVK", "sex": "M"}
+    ],
+    "Thanjavur": [
+      {"name": "A Raja", "party": "INC", "alliance": "DMK Alliance", "sex": "M"},
+      {"name": "M Manivannan", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "K Subramanian", "party": "TVK", "alliance": "TVK", "sex": "M"}
+    ],
+    "Papanasam": [
+      {"name": "S Vengadesan", "party": "DMK", "alliance": "DMK Alliance", "sex": "M"},
+      {"name": "N Ramar", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "R Saranya", "party": "TVK", "alliance": "TVK", "sex": "F"}
+    ],
+    "Salem West": [
+      {"name": "C Saraswathi", "party": "DMK", "alliance": "DMK Alliance", "sex": "F"},
+      {"name": "K Dhanapal", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "S Murugan", "party": "TVK", "alliance": "TVK", "sex": "M"}
+    ],
+    "Salem East": [
+      {"name": "R Kumar", "party": "DMK", "alliance": "DMK Alliance", "sex": "M"},
+      {"name": "G Rajendran", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "V Kavitha", "party": "TVK", "alliance": "TVK", "sex": "F"}
+    ],
+    "Omalur": [
+      {"name": "S Muthusamy", "party": "DMK", "alliance": "DMK Alliance", "sex": "M", "designation": "Industries Minister"},
+      {"name": "T Kumaran", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "A Srinivasan", "party": "TVK", "alliance": "TVK", "sex": "M"}
+    ],
+    "Vellore": [
+      {"name": "P Narayanan", "party": "DMK", "alliance": "DMK Alliance", "sex": "M"},
+      {"name": "K Ranganathan", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "S Priya", "party": "TVK", "alliance": "TVK", "sex": "F"}
+    ],
+    "Ranipet": [
+      {"name": "T R Baalu", "party": "DMK", "alliance": "DMK Alliance", "sex": "M"},
+      {"name": "M Kannappan", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "P Venkatesan", "party": "TVK", "alliance": "TVK", "sex": "M"}
+    ],
+    "Krishnagiri": [
+      {"name": "S Loga Jeyaraman", "party": "DMK", "alliance": "DMK Alliance", "sex": "M"},
+      {"name": "R Venkataraman", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "G Kavitha", "party": "TVK", "alliance": "TVK", "sex": "F"}
+    ],
+    "Hosur": [
+      {"name": "B Valarmathi", "party": "INC", "alliance": "DMK Alliance", "sex": "F"},
+      {"name": "A Prakash", "party": "BJP", "alliance": "NDA", "sex": "M"},
+      {"name": "S Sathish", "party": "TVK", "alliance": "TVK", "sex": "M"},
+      {"name": "K Arumugam", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"}
+    ],
+    "Villupuram": [
+      {"name": "D Sengottaiyan", "party": "INC", "alliance": "DMK Alliance", "sex": "M"},
+      {"name": "R Narayanan", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "P Tamilselvan", "party": "TVK", "alliance": "TVK", "sex": "M"}
+    ],
+    "Cuddalore": [
+      {"name": "K Rajan", "party": "CPM", "alliance": "DMK Alliance", "sex": "M"},
+      {"name": "M Murugesan", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "V Priyanka", "party": "TVK", "alliance": "TVK", "sex": "F"}
+    ],
+    "Nagapattinam": [
+      {"name": "R Selvam", "party": "DMK", "alliance": "DMK Alliance", "sex": "M"},
+      {"name": "K Palanisamy", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "S Gomathi", "party": "TVK", "alliance": "TVK", "sex": "F"}
+    ],
+    "Ramanathapuram": [
+      {"name": "M H Jawahirullah", "party": "MDMK", "alliance": "DMK Alliance", "sex": "M"},
+      {"name": "A Ameer", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "R Karthik", "party": "TVK", "alliance": "TVK", "sex": "M"}
+    ],
+    "Sivaganga": [
+      {"name": "V Meyyanathan", "party": "DMK", "alliance": "DMK Alliance", "sex": "M"},
+      {"name": "T Karthikeyan", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "P Saranya", "party": "TVK", "alliance": "TVK", "sex": "F"}
+    ],
+    "Virudhunagar": [
+      {"name": "K Rajendra Balaji", "party": "DMK", "alliance": "DMK Alliance", "sex": "M"},
+      {"name": "P Rajkumar", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "M Sudha", "party": "TVK", "alliance": "TVK", "sex": "F"}
+    ],
+    "Tenkasi": [
+      {"name": "V Senthil Balaji", "party": "DMK", "alliance": "DMK Alliance", "sex": "M", "designation": "Electricity Minister"},
+      {"name": "S Premkumar", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "K Ravi", "party": "TVK", "alliance": "TVK", "sex": "M"}
+    ],
+    "Nagercoil": [
+      {"name": "R Rajangam", "party": "INC", "alliance": "DMK Alliance", "sex": "M"},
+      {"name": "M Selin Jessy", "party": "AIADMK", "alliance": "AIADMK", "sex": "F"},
+      {"name": "P Nivedha", "party": "TVK", "alliance": "TVK", "sex": "F"}
+    ],
+    "Palladam": [
+      {"name": "K Selvaraj", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "R Arunachalam", "party": "DMK", "alliance": "DMK Alliance", "sex": "M"},
+      {"name": "G Karthi", "party": "TVK", "alliance": "TVK", "sex": "M"}
+    ],
+    "Mettupalayam": [
+      {"name": "M Udayakumar", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "S Balachandran", "party": "DMK", "alliance": "DMK Alliance", "sex": "M"},
+      {"name": "V Mahesh", "party": "TVK", "alliance": "TVK", "sex": "M"}
+    ],
+    "Erode East": [
+      {"name": "A Raja", "party": "DMK", "alliance": "DMK Alliance", "sex": "M"},
+      {"name": "P Eswaran", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "K Vidhya", "party": "TVK", "alliance": "TVK", "sex": "F"}
+    ],
+    "Erode West": [
+      {"name": "S Arumugam", "party": "DMK", "alliance": "DMK Alliance", "sex": "M"},
+      {"name": "M Manoharan", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "N Karthikeyan", "party": "TVK", "alliance": "TVK", "sex": "M"}
+    ],
+    "Dharmapuri": [
+      {"name": "R Mahendran", "party": "MDMK", "alliance": "DMK Alliance", "sex": "M"},
+      {"name": "A Ganesan", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "S Murugesan", "party": "TVK", "alliance": "TVK", "sex": "M"}
+    ],
+    "Namakkal": [
+      {"name": "T Pachamuthu", "party": "PMK", "alliance": "DMK Alliance", "sex": "M"},
+      {"name": "R Sathyamoorthy", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "K Priya", "party": "TVK", "alliance": "TVK", "sex": "F"}
+    ],
+    "Perambalur": [
+      {"name": "V Senthurkumaran", "party": "INC", "alliance": "DMK Alliance", "sex": "M"},
+      {"name": "G Munusamy", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "M Arulmurugan", "party": "TVK", "alliance": "TVK", "sex": "M"}
+    ],
+    "Ariyalur": [
+      {"name": "S Natarajan", "party": "DMK", "alliance": "DMK Alliance", "sex": "M"},
+      {"name": "P Devasahayam", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "R Sangeetha", "party": "TVK", "alliance": "TVK", "sex": "F"}
+    ],
+    "Mayiladuthurai": [
+      {"name": "A Anbalagan", "party": "DMK", "alliance": "DMK Alliance", "sex": "M"},
+      {"name": "V Srinivasan", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "K Sudha", "party": "TVK", "alliance": "TVK", "sex": "F"}
+    ],
+    "Dindigul": [
+      {"name": "R Mutharasan", "party": "CPM", "alliance": "DMK Alliance", "sex": "M"},
+      {"name": "S Thirunavukkarasu", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "P Shanmugam", "party": "TVK", "alliance": "TVK", "sex": "M"}
+    ],
+    "Theni": [
+      {"name": "E Rajkumar", "party": "DMK", "alliance": "DMK Alliance", "sex": "M"},
+      {"name": "M Kalaiyarasan", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "S Renuka", "party": "TVK", "alliance": "TVK", "sex": "F"}
+    ],
+    "Thoothukudi": [
+      {"name": "K Soundar Raj", "party": "DMK", "alliance": "DMK Alliance", "sex": "M"},
+      {"name": "P Rajkumar", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "A Deepa", "party": "TVK", "alliance": "TVK", "sex": "F"}
+    ],
+    "Pudukkottai": [
+      {"name": "T M Anbarasan", "party": "DMK", "alliance": "DMK Alliance", "sex": "M"},
+      {"name": "K Selvakumar", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "R Jayanthi", "party": "TVK", "alliance": "TVK", "sex": "F"}
+    ],
+    "Kallakurichi": [
+      {"name": "S Gokula Indira", "party": "DMK", "alliance": "DMK Alliance", "sex": "F", "designation": "Social Welfare Minister"},
+      {"name": "M Chandrasekaran", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "P Sridevi", "party": "TVK", "alliance": "TVK", "sex": "F"}
+    ],
+    "Arakkonam": [
+      {"name": "K Radhakrishnan", "party": "INC", "alliance": "DMK Alliance", "sex": "M"},
+      {"name": "S Murugesan", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "N Ramesh", "party": "TVK", "alliance": "TVK", "sex": "M"}
+    ],
+    "Karur": [
+      {"name": "S Rajendiran", "party": "INC", "alliance": "DMK Alliance", "sex": "M"},
+      {"name": "G Sampath", "party": "AIADMK", "alliance": "AIADMK", "sex": "M"},
+      {"name": "K Hemapriya", "party": "TVK", "alliance": "TVK", "sex": "F"}
+    ]
+  }
+}

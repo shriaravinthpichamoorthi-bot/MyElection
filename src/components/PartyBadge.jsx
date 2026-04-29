@@ -1,20 +1,22 @@
 import { partyColor } from '../utils/helpers';
+import PartyIcon from './PartyIcon';
 
-export default function PartyBadge({ party, partyColors = {}, size = 'sm' }) {
-  if (!party) return <span className="text-slate-600 text-xs">—</span>;
+export default function PartyBadge({ party, partyColors = {}, size = 'sm', showIcon = true }) {
+  if (!party) return <span style={{ color:'#475569', fontSize:12 }}>—</span>;
   const color = partyColor(party, partyColors);
-  const sizeClass = size === 'xs'
-    ? 'text-[10px] px-1.5 py-0.5 font-semibold tracking-wide'
-    : 'text-xs px-2.5 py-1 font-semibold tracking-wide';
+  const pad = size === 'xs' ? '2px 7px' : '3px 9px';
+  const fs = size === 'xs' ? 10 : 11;
+  const iconSize = size === 'xs' ? 11 : 13;
   return (
-    <span
-      className={`inline-flex items-center rounded-lg ${sizeClass} transition-all`}
-      style={{
-        background: color + '18',
-        color,
-        border: `1px solid ${color}40`,
-        boxShadow: `0 0 8px ${color}15`,
-      }}>
+    <span style={{
+      display:'inline-flex', alignItems:'center', gap: showIcon ? 4 : 0,
+      padding:pad, borderRadius:6,
+      fontSize:fs, fontWeight:700, letterSpacing:'0.04em',
+      color, background:`${color}1a`, border:`1px solid ${color}40`,
+      boxShadow:`0 0 8px ${color}18`,
+      whiteSpace:'nowrap',
+    }}>
+      {showIcon && <PartyIcon party={party} color={color} size={iconSize} />}
       {party}
     </span>
   );

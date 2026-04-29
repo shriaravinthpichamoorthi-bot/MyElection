@@ -1,10 +1,14 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { Users, Search } from 'lucide-react';
 import { useData } from '../context/DataContext';
 import LoadingSpinner from '../components/LoadingSpinner';
 import PartyBadge from '../components/PartyBadge';
 import SortTh from '../components/SortTh';
-import { slugify } from '../utils/helpers';
+import { slugify, partyColor } from '../utils/helpers';
+
+const selectStyle = { background: '#0f172a', border: '1px solid #1e293b', borderRadius: 10, color: '#e2e8f0', fontSize: 13, padding: '8px 12px', outline: 'none', cursor: 'pointer', fontFamily: 'inherit' };
 
 export default function Candidates() {
   const { data, loading } = useData();
@@ -49,83 +53,98 @@ export default function Candidates() {
   }, [allCandidates, search, filterParty, filterGender, filterWinner, sortCol, sortDir]);
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-white">Candidates</h1>
-        <p className="text-slate-400 text-sm">{allCandidates.length.toLocaleString()} unique candidates across 2001–2021</p>
+    <div style={{ maxWidth: 1200, display: 'flex', flexDirection: 'column', gap: 24 }}>
+      {/* Header */}
+      <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-end', justifyContent: 'space-between', gap: 16 }}>
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 4 }}>
+            <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(168,85,247,0.15)', border: '1px solid rgba(168,85,247,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Users size={18} color="#c084fc" />
+            </div>
+            <h1 style={{ fontSize: 24, fontWeight: 800, color: '#f8fafc' }}>Candidates</h1>
+          </div>
+          <p style={{ fontSize: 13, color: '#475569', paddingLeft: 48 }}>{allCandidates.length.toLocaleString()} unique candidates across 2001–2021</p>
+        </div>
       </div>
 
-      <div className="flex flex-wrap gap-3">
-        <input value={search} onChange={e => setSearch(e.target.value)}
-          placeholder="Search by name…"
-          className="px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 w-48" />
-        <select value={filterParty} onChange={e => setFilterParty(e.target.value)}
-          className="px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-slate-100 focus:outline-none focus:border-blue-500">
+      {/* Filter bar */}
+      <div className="card" style={{ padding: '14px 16px', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 10 }}>
+        <div style={{ position: 'relative' }}>
+          <Search size={13} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: '#475569' }} />
+          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by name…"
+            className="field" style={{ paddingLeft: 30, width: 180 }} />
+        </div>
+        <select value={filterParty} onChange={e => setFilterParty(e.target.value)} style={selectStyle}>
           <option value="">All Parties</option>
           {parties.map(p => <option key={p} value={p}>{p}</option>)}
         </select>
-        <select value={filterGender} onChange={e => setFilterGender(e.target.value)}
-          className="px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-slate-100 focus:outline-none focus:border-blue-500">
+        <select value={filterGender} onChange={e => setFilterGender(e.target.value)} style={selectStyle}>
           <option value="">All Genders</option>
           <option value="M">Male</option>
           <option value="F">Female</option>
         </select>
-        <label className="flex items-center gap-2 px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-slate-300 cursor-pointer">
-          <input type="checkbox" checked={filterWinner} onChange={e => setFilterWinner(e.target.checked)} className="accent-blue-500" />
+        <label style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', background: '#0f172a', border: '1px solid #1e293b', borderRadius: 10, fontSize: 13, color: '#94a3b8', cursor: 'pointer' }}>
+          <input type="checkbox" checked={filterWinner} onChange={e => setFilterWinner(e.target.checked)}
+            style={{ accentColor: '#6366f1' }} />
           Winners only
         </label>
-        <span className="text-slate-500 text-sm self-center">{filtered.length} results</span>
+        <div style={{ marginLeft: 'auto' }}>
+          <span style={{ fontSize: 12, color: '#475569' }}>
+            <span style={{ color: '#e2e8f0', fontWeight: 600 }}>{filtered.length}</span> results
+          </span>
+        </div>
       </div>
 
-      <div className="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+      {/* Table */}
+      <div className="card" style={{ overflow: 'hidden' }}>
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
-              <tr className="border-b border-slate-800">
+              <tr className="tbl-head">
                 <SortTh label="Candidate" col="name" activeCol={sortCol} dir={sortDir} onSort={sortToggle} />
-                <th className="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase whitespace-nowrap">Gender</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase whitespace-nowrap">Party</th>
+                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#475569', borderBottom: '1px solid #1e293b' }}>Gender</th>
+                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#475569', borderBottom: '1px solid #1e293b' }}>Party</th>
                 <SortTh label="Elections" col="elections" activeCol={sortCol} dir={sortDir} onSort={sortToggle} />
                 <SortTh label="Wins" col="wins" activeCol={sortCol} dir={sortDir} onSort={sortToggle} />
                 <SortTh label="Win Rate" col="winRate" activeCol={sortCol} dir={sortDir} onSort={sortToggle} />
-                <th className="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase whitespace-nowrap">Constituencies</th>
+                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#475569', borderBottom: '1px solid #1e293b', whiteSpace: 'nowrap' }}>Constituencies</th>
               </tr>
             </thead>
             <tbody>
               {filtered.slice(0, 200).map((c, i) => {
-                const constits = [...new Set(c.contests.map(x=>x.constituency))];
+                const constits = [...new Set(c.contests.map(x => x.constituency))];
+                const color = partyColor(c.party, partyColors);
                 return (
-                  <tr key={i} className="border-b border-slate-800/40 hover:bg-slate-800/30 transition-colors">
-                    <td className="px-4 py-3">
-                      <Link to={`/candidate/${slugify(c.name)}`} className="text-blue-400 hover:text-blue-300 font-medium">
+                  <tr key={i} className="tbl-row">
+                    <td>
+                      <Link to={`/candidate/${slugify(c.name)}`}
+                        style={{ color: '#818cf8', textDecoration: 'none', fontWeight: 500 }}>
                         {c.name}
                       </Link>
                     </td>
-                    <td className="px-4 py-3 text-slate-400">{c.sex === 'F' ? '♀ F' : c.sex === 'M' ? '♂ M' : '—'}</td>
-                    <td className="px-4 py-3">
-                      <PartyBadge party={c.party} partyColors={partyColors} size="xs" />
+                    <td style={{ color: '#475569', fontSize: 13 }}>{c.sex === 'F' ? '♀ F' : c.sex === 'M' ? '♂ M' : '—'}</td>
+                    <td><PartyBadge party={c.party} partyColors={partyColors} size="xs" /></td>
+                    <td style={{ color: '#64748b', fontSize: 13, fontVariantNumeric: 'tabular-nums' }}>{c.elections}</td>
+                    <td>
+                      <span style={{ fontWeight: 700, color: c.wins > 0 ? '#34d399' : '#334155', fontSize: 13 }}>{c.wins}</span>
                     </td>
-                    <td className="px-4 py-3 text-slate-300">{c.elections}</td>
-                    <td className="px-4 py-3">
-                      <span className={c.wins > 0 ? 'text-green-400 font-semibold' : 'text-slate-500'}>{c.wins}</span>
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-2">
-                        <div className="w-12 bg-slate-800 rounded-full h-1.5">
-                          <div className="h-1.5 rounded-full bg-green-500" style={{ width: `${c.winRate.toFixed(0)}%` }} />
+                    <td>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <div style={{ width: 48, height: 5, borderRadius: 3, background: '#1e293b', overflow: 'hidden' }}>
+                          <div style={{ height: '100%', borderRadius: 3, background: '#34d399', width: `${c.winRate.toFixed(0)}%` }} />
                         </div>
-                        <span className="text-slate-400 text-xs">{c.winRate.toFixed(0)}%</span>
+                        <span style={{ fontSize: 12, color: '#64748b', fontVariantNumeric: 'tabular-nums' }}>{c.winRate.toFixed(0)}%</span>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-slate-400 text-xs">{constits.slice(0,2).join(', ')}{constits.length > 2 ? ` +${constits.length-2}` : ''}</td>
+                    <td style={{ color: '#475569', fontSize: 12 }}>{constits.slice(0, 2).join(', ')}{constits.length > 2 ? ` +${constits.length - 2}` : ''}</td>
                   </tr>
                 );
               })}
               {filtered.length === 0 && (
-                <tr><td colSpan={7} className="px-4 py-8 text-center text-slate-500">No candidates match your filters</td></tr>
+                <tr><td colSpan={7} style={{ padding: '48px 16px', textAlign: 'center', color: '#334155', fontSize: 13 }}>No candidates match your filters</td></tr>
               )}
               {filtered.length > 200 && (
-                <tr><td colSpan={7} className="px-4 py-3 text-center text-slate-500 text-xs">Showing first 200 of {filtered.length} results. Refine your search.</td></tr>
+                <tr><td colSpan={7} style={{ padding: '12px 16px', textAlign: 'center', color: '#334155', fontSize: 12 }}>Showing first 200 of {filtered.length} results. Refine your search.</td></tr>
               )}
             </tbody>
           </table>

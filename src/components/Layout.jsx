@@ -3,245 +3,251 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Search, Menu, X, BarChart3, MapPin, Users, TrendingUp,
-  GitCompare, Home, Globe, Map, ChevronRight, Zap,
+  GitCompare, Home, Globe, Map, Zap, ChevronRight, ChevronLeft, Radio,
 } from 'lucide-react';
 import { useData } from '../context/DataContext';
 import { slugify } from '../utils/helpers';
+import LiveResultsBanner from './LiveResultsBanner';
 
-const NAV_GROUPS = [
-  {
-    label: 'Explore',
-    items: [
-      { to: '/', label: 'Dashboard', icon: Home },
-      { to: '/map', label: 'Map View', icon: Map },
-      { to: '/districts', label: 'Districts', icon: MapPin },
-      { to: '/constituencies', label: 'Constituencies', icon: Globe },
-    ],
-  },
-  {
-    label: 'Analyze',
-    items: [
-      { to: '/analytics', label: 'Analytics', icon: BarChart3 },
-      { to: '/compare', label: 'Compare', icon: GitCompare },
-      { to: '/candidates', label: 'Candidates', icon: Users },
-      { to: '/predictions', label: 'Predictions', icon: TrendingUp, badge: '2026' },
-    ],
-  },
+const NAV = [
+  { group: 'Live 2026', items: [
+    { to: '/live', label: 'Live Results', icon: Radio, badge: 'LIVE', live: true },
+  ]},
+  { group: 'Explore', items: [
+    { to: '/',               label: 'Dashboard',     icon: Home },
+    { to: '/map',            label: 'Map View',       icon: Map },
+    { to: '/districts',      label: 'Districts',      icon: MapPin },
+    { to: '/constituencies', label: 'Constituencies', icon: Globe },
+  ]},
+  { group: 'Analyze', items: [
+    { to: '/analytics',   label: 'Analytics',    icon: BarChart3 },
+    { to: '/compare',     label: 'Compare',      icon: GitCompare },
+    { to: '/candidates',  label: 'Candidates',   icon: Users },
+    { to: '/predictions', label: 'Predictions',  icon: TrendingUp, badge: '2026' },
+  ]},
 ];
 
-function NavItem({ to, label, icon: Icon, badge, active, onClick }) {
+function SidebarContent({ onNav, collapsed, onToggle }) {
+  const { pathname } = useLocation();
   return (
-    <Link to={to} onClick={onClick}
-      className={`group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 relative ${
-        active
-          ? 'bg-indigo-600/20 text-indigo-300 border border-indigo-500/30'
-          : 'text-slate-400 hover:text-slate-200 hover:bg-white/5 border border-transparent'
-      }`}>
-      {active && (
-        <motion.div layoutId="nav-indicator"
-          className="absolute inset-0 rounded-xl bg-indigo-600/15 border border-indigo-500/30"
-          transition={{ type: 'spring', bounce: 0.2, duration: 0.4 }} />
-      )}
-      <Icon className={`w-4 h-4 shrink-0 relative z-10 transition-colors ${active ? 'text-indigo-400' : 'text-slate-500 group-hover:text-slate-300'}`} />
-      <span className="relative z-10 flex-1">{label}</span>
-      {badge && (
-        <span className="relative z-10 text-[10px] px-1.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 font-semibold">
-          {badge}
-        </span>
-      )}
-      {active && <ChevronRight className="w-3 h-3 text-indigo-400 relative z-10 opacity-60" />}
-    </Link>
-  );
-}
-
-export default function Layout({ children }) {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [query, setQuery] = useState('');
-  const [results, setResults] = useState([]);
-  const [searchFocused, setSearchFocused] = useState(false);
-  const { data } = useData();
-  const loc = useLocation();
-  const nav = useNavigate();
-  const searchRef = useRef();
-
-  useEffect(() => { setSidebarOpen(false); }, [loc.pathname]);
-
-  useEffect(() => {
-    if (!query.trim() || !data) { setResults([]); return; }
-    const q = query.toLowerCase();
-    const cResults = data.constituencies
-      .filter(c => c.toLowerCase().includes(q)).slice(0, 4)
-      .map(c => ({ type: 'constituency', label: c, to: `/constituency/${slugify(c)}` }));
-    const dResults = data.districts
-      .filter(d => d.toLowerCase().includes(q)).slice(0, 2)
-      .map(d => ({ type: 'district', label: d, to: `/district/${slugify(d)}` }));
-    const candKeys = Object.keys(data.candidateMap).filter(k => k.includes(q)).slice(0, 2);
-    const cands = candKeys.map(k => ({
-      type: 'candidate', label: data.candidateMap[k].name,
-      to: `/candidate/${slugify(data.candidateMap[k].name)}`,
-    }));
-    setResults([...cResults, ...dResults, ...cands]);
-  }, [query, data]);
-
-  function pick(to) {
-    setQuery(''); setResults([]);
-    nav(to);
-  }
-
-  useEffect(() => {
-    function handler(e) {
-      if (searchRef.current && !searchRef.current.contains(e.target)) {
-        setResults([]); setSearchFocused(false);
-      }
-    }
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, []);
-
-  const typeStyles = {
-    constituency: 'bg-indigo-500/15 text-indigo-300 border border-indigo-500/20',
-    district: 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/20',
-    candidate: 'bg-violet-500/15 text-violet-300 border border-violet-500/20',
-  };
-
-  const Sidebar = ({ mobile = false }) => (
-    <div className={`flex flex-col h-full ${mobile ? '' : 'py-6'}`}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', padding: '20px 0' }}>
       {/* Logo */}
-      <div className={`px-4 ${mobile ? 'py-5 border-b border-white/5 mb-4' : 'mb-8'}`}>
-        <Link to="/" className="flex items-center gap-3 group">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-500/25">
-            <Zap className="w-4 h-4 text-white" />
+      <div style={{ padding: collapsed ? '0 0 24px' : '0 16px 24px', display: 'flex', alignItems: 'center', justifyContent: collapsed ? 'center' : 'flex-start', gap: 10 }}>
+        <Link to="/" onClick={onNav} style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none', overflow: 'hidden' }}>
+          <div style={{ width: 34, height: 34, borderRadius: 10, background: 'linear-gradient(135deg,#6366f1,#7c3aed)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 20px rgba(99,102,241,0.4)', flexShrink: 0 }}>
+            <Zap size={16} color="#fff" />
           </div>
-          <div>
-            <div className="text-sm font-bold text-white leading-tight">TN Election</div>
-            <div className="text-[10px] font-medium tracking-wider text-indigo-400 uppercase">Intelligence Portal</div>
-          </div>
+          {!collapsed && (
+            <div style={{ overflow: 'hidden' }}>
+              <div style={{ fontWeight: 700, fontSize: 13, color: '#f8fafc', lineHeight: 1.2, whiteSpace: 'nowrap' }}>TN Election</div>
+              <div style={{ fontWeight: 600, fontSize: 9, color: '#6366f1', letterSpacing: '0.12em', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Intelligence Portal</div>
+            </div>
+          )}
         </Link>
       </div>
 
-      {/* Navigation groups */}
-      <nav className="flex-1 px-3 space-y-6 overflow-y-auto">
-        {NAV_GROUPS.map(group => (
-          <div key={group.label}>
-            <p className="text-[10px] font-semibold tracking-widest text-slate-600 uppercase px-3 mb-2">{group.label}</p>
-            <div className="space-y-0.5">
-              {group.items.map(item => (
-                <NavItem key={item.to} {...item}
-                  active={loc.pathname === item.to}
-                  onClick={() => setSidebarOpen(false)} />
-              ))}
+      {/* Nav */}
+      <nav style={{ flex: 1, padding: collapsed ? '0 8px' : '0 10px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: collapsed ? 4 : 20 }}>
+        {NAV.map(({ group, items }) => (
+          <div key={group}>
+            {!collapsed && (
+              <div style={{ fontSize: 10, fontWeight: 700, color: '#334155', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '0 10px 6px' }}>
+                {group}
+              </div>
+            )}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              {items.map(({ to, label, icon: Icon, badge, live }) => {
+                const active = live
+                  ? (pathname === to || pathname.startsWith('/live'))
+                  : pathname === to;
+                return (
+                  <Link key={to} to={to} onClick={onNav}
+                    className={active ? 'nav-active' : 'nav-idle'}
+                    title={collapsed ? label : undefined}
+                    style={{ display: 'flex', alignItems: 'center', gap: collapsed ? 0 : 10, padding: collapsed ? '9px 0' : '9px 10px', borderRadius: 10, textDecoration: 'none', fontSize: 13, fontWeight: 500, justifyContent: collapsed ? 'center' : 'flex-start' }}>
+                    <Icon size={15} style={{ color: active ? (live ? '#f87171' : '#818cf8') : '#475569', flexShrink: 0 }} />
+                    {!collapsed && (
+                      <>
+                        <span style={{ flex: 1 }}>{label}</span>
+                        {badge && (
+                          <span style={{ fontSize: 9, fontWeight: 700, padding: '2px 6px', borderRadius: 999, background: live ? 'rgba(239,68,68,0.2)' : 'rgba(99,102,241,0.2)', color: live ? '#fca5a5' : '#a5b4fc', border: `1px solid ${live ? 'rgba(239,68,68,0.35)' : 'rgba(99,102,241,0.3)'}`, letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: 4 }}>
+                            {live && <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#ef4444', display: 'inline-block', animation: 'pulse 1.6s ease-in-out infinite' }} />}
+                            {badge}
+                          </span>
+                        )}
+                        {active && <ChevronRight size={12} style={{ color: live ? '#ef4444' : '#6366f1', opacity: 0.6 }} />}
+                      </>
+                    )}
+                  </Link>
+                );
+              })}
             </div>
           </div>
         ))}
       </nav>
 
-      {/* Footer */}
-      <div className="px-4 mt-6 pt-4 border-t border-white/5">
-        <p className="text-[10px] text-slate-600 leading-relaxed">
-          234 constituencies · 38 districts<br />
-          Data: 2001–2026
-        </p>
+      {/* Footer + collapse toggle */}
+      <div style={{ padding: collapsed ? '16px 8px 0' : '16px 20px 0', borderTop: '1px solid #1e293b', marginTop: 16 }}>
+        {!collapsed && (
+          <p style={{ fontSize: 11, color: '#334155', lineHeight: 1.6, marginBottom: 10 }}>
+            234 constituencies · 38 districts<br />2001–2026
+          </p>
+        )}
+        {onToggle && (
+          <button onClick={onToggle}
+            title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', padding: '8px 0', borderRadius: 9, border: '1px solid #1e293b', background: 'transparent', cursor: 'pointer', color: '#334155', transition: 'all 0.15s' }}
+            onMouseEnter={e => { e.currentTarget.style.background = '#141e33'; e.currentTarget.style.color = '#64748b'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#334155'; }}>
+            {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
+          </button>
+        )}
       </div>
     </div>
   );
+}
+
+export default function Layout({ children }) {
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(() => localStorage.getItem('sidebar-collapsed') === 'true');
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState([]);
+  const { data } = useData();
+  const { pathname } = useLocation();
+  const nav = useNavigate();
+  const searchRef = useRef();
+
+  const SIDEBAR_W = collapsed ? 64 : 240;
+
+  useEffect(() => { setMobileOpen(false); }, [pathname]);
+
+  useEffect(() => {
+    if (!query.trim() || !data) { setResults([]); return; }
+    const q = query.toLowerCase();
+    const c = data.constituencies.filter(x => x.toLowerCase().includes(q)).slice(0, 4)
+      .map(x => ({ type: 'constituency', label: x, to: `/constituency/${slugify(x)}` }));
+    const d = data.districts.filter(x => x.toLowerCase().includes(q)).slice(0, 2)
+      .map(x => ({ type: 'district', label: x, to: `/district/${slugify(x)}` }));
+    const k = Object.keys(data.candidateMap).filter(x => x.includes(q)).slice(0, 2)
+      .map(x => ({ type: 'candidate', label: data.candidateMap[x].name, to: `/candidate/${slugify(data.candidateMap[x].name)}` }));
+    setResults([...c, ...d, ...k]);
+  }, [query, data]);
+
+  function pick(to) { setQuery(''); setResults([]); nav(to); }
+
+  function toggleCollapse() {
+    setCollapsed(c => {
+      const next = !c;
+      localStorage.setItem('sidebar-collapsed', String(next));
+      return next;
+    });
+  }
+
+  useEffect(() => {
+    const h = e => { if (searchRef.current && !searchRef.current.contains(e.target)) setResults([]); };
+    document.addEventListener('mousedown', h);
+    return () => document.removeEventListener('mousedown', h);
+  }, []);
+
+  const typeBg = { constituency: 'rgba(99,102,241,0.15)', district: 'rgba(16,185,129,0.15)', candidate: 'rgba(139,92,246,0.15)' };
+  const typeColor = { constituency: '#818cf8', district: '#34d399', candidate: '#a78bfa' };
 
   return (
-    <div className="min-h-screen mesh-bg flex">
-      {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex flex-col w-64 shrink-0 border-r border-white/5 bg-black/20 backdrop-blur-xl fixed top-0 left-0 h-screen z-40">
-        <Sidebar />
+    <div className="app-bg" style={{ display: 'flex', minHeight: '100vh' }}>
+      {/* Desktop sidebar */}
+      <aside
+        className="sidebar"
+        style={{ flexShrink: 0, position: 'fixed', top: 0, left: 0, height: '100vh', zIndex: 40, overflow: 'hidden', display: 'none', width: SIDEBAR_W, transition: 'width 0.25s ease' }}
+        id="desktop-sidebar">
+        <SidebarContent onNav={() => {}} collapsed={collapsed} onToggle={toggleCollapse} />
       </aside>
 
-      {/* Mobile Sidebar Overlay */}
+      <style>{`@media(min-width:1024px){#desktop-sidebar{display:block!important}}`}</style>
+
+      {/* Mobile overlay */}
       <AnimatePresence>
-        {sidebarOpen && (
+        {mobileOpen && (
           <>
-            <motion.div
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
-              onClick={() => setSidebarOpen(false)} />
-            <motion.aside
-              initial={{ x: -280 }} animate={{ x: 0 }} exit={{ x: -280 }}
-              transition={{ type: 'spring', bounce: 0, duration: 0.35 }}
-              className="fixed top-0 left-0 h-screen w-72 z-50 bg-slate-950/95 backdrop-blur-xl border-r border-white/10 lg:hidden overflow-y-auto">
-              <Sidebar mobile />
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', zIndex: 40 }}
+              onClick={() => setMobileOpen(false)} />
+            <motion.aside initial={{ x: -240 }} animate={{ x: 0 }} exit={{ x: -240 }}
+              transition={{ type: 'spring', bounce: 0, duration: 0.28 }}
+              className="sidebar" style={{ position: 'fixed', top: 0, left: 0, height: '100vh', width: 240, zIndex: 50, overflowY: 'auto' }}>
+              <button onClick={() => setMobileOpen(false)}
+                style={{ position: 'absolute', top: 12, right: 12, padding: 6, borderRadius: 8, background: 'rgba(255,255,255,0.05)', border: 'none', cursor: 'pointer', color: '#94a3b8' }}>
+                <X size={16} />
+              </button>
+              <SidebarContent onNav={() => setMobileOpen(false)} collapsed={false} onToggle={null} />
             </motion.aside>
           </>
         )}
       </AnimatePresence>
 
-      {/* Main content area */}
-      <div className="flex-1 lg:pl-64 min-w-0">
+      {/* Main */}
+      <div
+        style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}
+        id="main-content">
+        <style>{`@media(min-width:1024px){#main-content{padding-left:${SIDEBAR_W}px;transition:padding-left 0.25s ease}}@media(max-width:1023px){#main-content{padding-left:0}}`}</style>
+
         {/* Top bar */}
-        <header className="sticky top-0 z-30 h-14 flex items-center gap-4 px-4 lg:px-6 border-b border-white/5 bg-black/30 backdrop-blur-xl">
-          {/* Mobile menu button */}
-          <button onClick={() => setSidebarOpen(true)}
-            className="lg:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-colors">
-            <Menu className="w-5 h-5" />
+        <header className="topbar" style={{ position: 'sticky', top: 0, zIndex: 30, height: 56, display: 'flex', alignItems: 'center', gap: 16, padding: '0 24px' }}>
+          <button onClick={() => setMobileOpen(true)}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 34, height: 34, borderRadius: 8, background: 'rgba(255,255,255,0.04)', border: '1px solid #1e293b', cursor: 'pointer', color: '#64748b' }}
+            id="mobile-menu-btn">
+            <Menu size={16} />
           </button>
+          <style>{`@media(min-width:1024px){#mobile-menu-btn{display:none!important}}`}</style>
 
           {/* Search */}
-          <div ref={searchRef} className="flex-1 relative max-w-lg">
-            <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors ${searchFocused ? 'text-indigo-400' : 'text-slate-500'}`} />
-            <input
-              value={query}
-              onChange={e => setQuery(e.target.value)}
-              onFocus={() => setSearchFocused(true)}
+          <div ref={searchRef} style={{ flex: 1, maxWidth: 480, position: 'relative' }}>
+            <Search size={15} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#475569', pointerEvents: 'none' }} />
+            <input value={query} onChange={e => setQuery(e.target.value)}
               placeholder="Search constituency, district, candidate…"
-              className={`w-full pl-9 pr-4 py-2 rounded-xl text-sm text-slate-100 placeholder-slate-500 transition-all duration-200 ${
-                searchFocused
-                  ? 'bg-slate-900/80 border border-indigo-500/40 shadow-lg shadow-indigo-500/10'
-                  : 'bg-white/5 border border-white/8 hover:border-white/15'
-              } focus:outline-none`}
-            />
+              className="field" style={{ width: '100%', paddingLeft: 36 }} />
             <AnimatePresence>
               {results.length > 0 && (
-                <motion.div
-                  initial={{ opacity: 0, y: -8, scale: 0.97 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -8, scale: 0.97 }}
-                  transition={{ duration: 0.15 }}
-                  className="absolute top-full mt-2 w-full glass rounded-xl shadow-2xl shadow-black/50 overflow-hidden z-50">
+                <motion.div initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: 0.12 }}
+                  style={{ position: 'absolute', top: 'calc(100% + 6px)', left: 0, right: 0, background: '#0f172a', border: '1px solid #1e293b', borderRadius: 12, overflow: 'hidden', zIndex: 50, boxShadow: '0 16px 48px rgba(0,0,0,0.5)' }}>
                   {results.map((r, i) => (
-                    <motion.button key={i}
-                      initial={{ opacity: 0, x: -8 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.04 }}
-                      onClick={() => pick(r.to)}
-                      className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-white/5 text-left transition-colors border-b border-white/5 last:border-0">
-                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold uppercase tracking-wide ${typeStyles[r.type]}`}>
+                    <button key={i} onClick={() => pick(r.to)}
+                      style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', background: 'none', border: 'none', borderBottom: '1px solid #1e293b', cursor: 'pointer', textAlign: 'left' }}
+                      onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
+                      onMouseLeave={e => e.currentTarget.style.background = 'none'}>
+                      <span style={{ fontSize: 9, fontWeight: 700, padding: '2px 6px', borderRadius: 999, background: typeBg[r.type], color: typeColor[r.type], textTransform: 'uppercase', letterSpacing: '0.08em', flexShrink: 0 }}>
                         {r.type}
                       </span>
-                      <span className="text-sm text-slate-200">{r.label}</span>
-                    </motion.button>
+                      <span style={{ fontSize: 13, color: '#e2e8f0' }}>{r.label}</span>
+                    </button>
                   ))}
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
 
-          {/* Live badge */}
-          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 pulse-dot" />
-            <span className="text-xs text-emerald-400 font-medium">2026 Live</span>
+          {/* Live badge — topbar chip */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '5px 10px', borderRadius: 999, background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.25)', flexShrink: 0 }}>
+            <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#ef4444', flexShrink: 0, animation: 'pulse 1.6s ease-in-out infinite' }} />
+            <span style={{ fontSize: 11, fontWeight: 700, color: '#ef4444', letterSpacing: '0.05em' }}>2026 LIVE</span>
           </div>
         </header>
 
-        {/* Page content */}
-        <main className="px-4 lg:px-8 py-6 lg:py-8">
-          <motion.div
-            key={loc.pathname}
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}>
-            {children}
+        {/* Live results banner */}
+        <LiveResultsBanner />
+
+        {/* Content */}
+        <main style={{ flex: 1, padding: '32px' }} id="main-pad">
+          <style>{`@media(max-width:640px){#main-pad{padding:16px!important}}`}</style>
+          <motion.div key={pathname} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.22, ease: 'easeOut' }}>
+            <div style={{ maxWidth: 1200, margin: '0 auto', width: '100%' }}>
+              {children}
+            </div>
           </motion.div>
         </main>
 
-        <footer className="px-6 py-6 border-t border-white/5 text-center">
-          <p className="text-xs text-slate-600">
-            Tamil Nadu Election Intelligence Portal · 2001–2026 · 234 constituencies · 38 districts
-          </p>
+        <footer style={{ padding: '20px 32px', borderTop: '1px solid #1e293b', textAlign: 'center' }}>
+          <p style={{ fontSize: 11, color: '#334155' }}>Tamil Nadu Election Intelligence Portal · 2001–2026 · 234 constituencies · 38 districts</p>
         </footer>
       </div>
     </div>
