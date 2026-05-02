@@ -25,11 +25,13 @@ from config import (
     DETAIL_CACHE_TTL_SECONDS,
     DETAIL_CONCURRENCY,
     ECI_BASE_URL,
+    ELECTION_FOLDER,
     ENABLE_MOCK_DATA,
     HEADLESS,
     PAGE_LOAD_DELAY_SECONDS,
     REFRESH_INTERVAL_MINUTES,
     STATE_CODE,
+    STATE_NAME,
     TOTAL_CONSTITUENCIES,
 )
 from models import (
@@ -518,6 +520,11 @@ async def get_constituency(const_id: str, request: Request):
 async def get_config():
     """Public configuration values the frontend needs."""
     return {
+        "state_code": STATE_CODE,
+        "state_name": STATE_NAME,
+        "total_constituencies": TOTAL_CONSTITUENCIES,
+        "election_folder_env": ELECTION_FOLDER or "(not set — auto-discover)",
+        "election_folder_runtime": _folder or "(not yet discovered)",
         "refresh_interval_minutes": REFRESH_INTERVAL_MINUTES,
         "detail_cache_ttl_seconds": DETAIL_CACHE_TTL_SECONDS,
         "page_load_delay_seconds": PAGE_LOAD_DELAY_SECONDS,
