@@ -36,7 +36,7 @@ function getMapTickMs() {
 export function LiveResultsProvider({ children, config = {} }) {
   const {
     candidateJson = '/live_candidates_2026.json',
-    districtJson = null,
+    districtJson = '/tn_districts.json',
     apiClient = null,
     allianceColors = TN_ALLIANCE_COLORS,
   } = config;
