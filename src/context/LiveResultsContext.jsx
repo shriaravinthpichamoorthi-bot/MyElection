@@ -3,14 +3,15 @@ import { getConstituencies, getSummary, getConfig } from '../utils/api';
 
 // Default Tamil Nadu alliance colors (used when no config override provided)
 const TN_ALLIANCE_COLORS = {
-  'DMK Alliance': '#e53935',
-  AIADMK: '#1b5e20',
-  NTK: '#4a148c',
-  TVK: '#00695c',
-  NDA: '#f57c00',
-  AMMK: '#01579b',
-  IND: '#607d8b',
+  'DMK Alliance': '#CC0000',
+  AIADMK: '#006400',
+  NTK: '#212121',
+  TVK: '#FDD835',
   Others: '#607d8b',
+  IND: '#607d8b',
+  // NDA and AMMK are folded into AIADMK alliance; keep colors for nomination data compatibility
+  NDA: '#006400',
+  AMMK: '#006400',
 };
 
 const LiveResultsContext = createContext(null);

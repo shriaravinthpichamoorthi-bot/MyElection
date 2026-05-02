@@ -12,6 +12,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 const TT = { contentStyle: { background: '#1e293b', border: '1px solid #475569', borderRadius: 10, color: '#f8fafc', fontSize: 12, boxShadow: '0 8px 24px rgba(0,0,0,0.5)' } };
 
 const TN_ALLIANCES_ORDER = ['DMK Alliance', 'AIADMK', 'NTK', 'TVK', 'NDA', 'AMMK', 'Others', 'IND'];
+// NDA and AMMK are kept in order so pre-election nomination data still renders (they fold into AIADMK on election day)
 
 function StatusCard({ label, count, color, icon: Icon, to }) {
   const navigate = useNavigate();
