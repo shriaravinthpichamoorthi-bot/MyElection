@@ -1,8 +1,9 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { RefreshCw, CalendarClock, Info } from 'lucide-react';
+import { RefreshCw, CalendarClock, Info, Radio } from 'lucide-react';
 import { useLiveResults, ALLIANCE_COLORS } from '../context/LiveResultsContext';
+import { useLiveBasePath } from '../hooks/useLiveBasePath';
 import { useData } from '../context/DataContext';
 import { slugify } from '../utils/helpers';
 import LiveTabBar from '../components/LiveTabBar';
@@ -96,13 +97,15 @@ function MapLegend({ allianceCounts }) {
 }
 
 export default function LiveMapView() {
-  const { loading: liveLoading, allResults, lastUpdated } = useLiveResults();
+  const { loading: liveLoading, allResults, lastUpdated, liveMeta, mapTickMs } = useLiveResults();
   const { data, loading: dataLoading } = useData();
   const [geoJson, setGeoJson] = useState(null);
   const [mapLoading, setMapLoading] = useState(true);
   const [selected, setSelected] = useState(null);
   const [hovered, setHovered] = useState(null);
   const [, tick] = useState(0);
+
+  const hasLiveData = liveMeta && liveMeta.status !== 'awaiting';
 
   useEffect(() => {
     fetch('/tamil-nadu-assembly-constituencies.geojson')
@@ -113,9 +116,9 @@ export default function LiveMapView() {
   }, []);
 
   useEffect(() => {
-    const id = setInterval(() => tick(n => n + 1), 10000);
+    const id = setInterval(() => tick(n => n + 1), mapTickMs);
     return () => clearInterval(id);
-  }, []);
+  }, [mapTickMs]);
 
   // Case-insensitive name lookup from allResults keys
   const nameLookup = useMemo(() => {
@@ -146,18 +149,26 @@ export default function LiveMapView() {
       // Fall back to case-insensitive match against allResults keys
       if (!canonicalName) canonicalName = nameLookup[acName.toLowerCase()] ?? acName;
       const resultData = allResults[canonicalName];
+      const live = resultData?._live;
       const leader = resultData?.candidates?.[0];
+      // Use live data alliance if available, else nomination alliance
+      const alliance = live?.leading_alliance ?? leader?.alliance ?? null;
+      const party = live?.leading_party ?? leader?.party ?? null;
+      const status = live?.status ?? 'awaiting';
+      const margin = live?.margin ?? 0;
       return {
         acNo,
         name: canonicalName,
-        alliance: leader?.alliance ?? null,
+        alliance,
+        party,
+        status,
+        margin,
         candidateCount: resultData?.candidates?.length ?? 0,
-        topParty: leader?.party ?? null,
       };
     });
   }, [geoJson, allResults, acNoToName, nameLookup]);
 
-  // Alliance nomination counts for legend
+  // Alliance counts for legend
   const allianceCounts = useMemo(() => {
     const c = {};
     shapes.forEach(s => { if (s.alliance) c[s.alliance] = (c[s.alliance] || 0) + 1; });
@@ -169,6 +180,7 @@ export default function LiveMapView() {
     [shapes, selected, hovered]
   );
   const activeResult = activeShape ? allResults?.[activeShape.name] : null;
+  const activeLive = activeResult?._live;
 
   if (liveLoading || dataLoading || mapLoading) return <LoadingSpinner />;
   if (!allResults) return <div style={{ color: '#f87171', padding: 32 }}>Failed to load live data.</div>;
@@ -187,13 +199,15 @@ export default function LiveMapView() {
           </div>
         </div>
 
-        {/* Data coming soon notice */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '11px 16px', borderRadius: 10, background: 'rgba(99,102,241,0.06)', border: '1px solid rgba(99,102,241,0.18)' }}>
-          <CalendarClock size={15} style={{ color: '#818cf8', flexShrink: 0 }} />
-          <p style={{ fontSize: 12, color: '#818cf8', fontWeight: 600 }}>
-            Results will appear here on election day · Map shows 2026 nomination alliances
-          </p>
-        </div>
+        {/* Data notice */}
+        {!hasLiveData && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '11px 16px', borderRadius: 10, background: 'rgba(99,102,241,0.06)', border: '1px solid rgba(99,102,241,0.18)' }}>
+            <CalendarClock size={15} style={{ color: '#818cf8', flexShrink: 0 }} />
+            <p style={{ fontSize: 12, color: '#818cf8', fontWeight: 600 }}>
+              Results will appear here on election day · Map shows 2026 nomination alliances
+            </p>
+          </div>
+        )}
 
         {/* Legend */}
         <div className="card" style={{ padding: '12px 16px' }}>
@@ -232,7 +246,7 @@ export default function LiveMapView() {
               </g>
             </svg>
             <p style={{ fontSize: 10, color: '#334155', marginTop: 10, display: 'flex', alignItems: 'center', gap: 4 }}>
-              <Info size={10} /> Coloured by nominated alliance · Click any constituency for details
+              <Info size={10} /> {hasLiveData ? 'Coloured by leading alliance · Click any constituency for details' : 'Coloured by nominated alliance · Click any constituency for details'}
             </p>
           </div>
 
@@ -256,8 +270,30 @@ export default function LiveMapView() {
                     <span style={{ fontSize: 11, fontWeight: 700, color: ALLIANCE_COLORS[activeShape.alliance] ?? '#607d8b' }}>
                       {activeShape.alliance}
                     </span>
-                    {activeShape.topParty && (
-                      <span style={{ fontSize: 10, color: '#64748b' }}>· {activeShape.topParty}</span>
+                    {activeShape.party && (
+                      <span style={{ fontSize: 10, color: '#64748b' }}>· {activeShape.party}</span>
+                    )}
+                  </div>
+                )}
+
+                {hasLiveData && activeLive && (
+                  <div style={{ marginBottom: 14 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+                      <Radio size={12} style={{ color: activeLive.status === 'declared' ? '#34d399' : '#fbbf24' }} />
+                      <span style={{ fontSize: 11, fontWeight: 700, color: activeLive.status === 'declared' ? '#34d399' : '#fbbf24', textTransform: 'capitalize' }}>
+                        {activeLive.status}
+                      </span>
+                      {activeLive.margin > 0 && (
+                        <span style={{ fontSize: 10, color: '#64748b' }}>· Margin: +{activeLive.margin.toLocaleString('en-IN')}</span>
+                      )}
+                    </div>
+                    {activeLive.leading_candidate && (
+                      <p style={{ fontSize: 11, color: '#94a3b8' }}>
+                        Leading: {activeLive.leading_candidate} ({activeLive.leading_party})
+                      </p>
+                    )}
+                    {activeLive.round && (
+                      <p style={{ fontSize: 10, color: '#475569', marginTop: 2 }}>Round {activeLive.round}</p>
                     )}
                   </div>
                 )}
@@ -266,18 +302,20 @@ export default function LiveMapView() {
                   {activeShape.candidateCount} candidates nominated
                 </p>
 
-                {/* Data coming soon */}
-                <div style={{ padding: '12px 14px', borderRadius: 8, background: 'rgba(99,102,241,0.06)', border: '1px solid rgba(99,102,241,0.15)', marginBottom: 14, textAlign: 'center' }}>
-                  <CalendarClock size={16} style={{ color: '#818cf8', margin: '0 auto 6px' }} />
-                  <p style={{ fontSize: 11, color: '#818cf8', fontWeight: 600 }}>Results on election day</p>
-                </div>
+                {!hasLiveData && (
+                  <div style={{ padding: '12px 14px', borderRadius: 8, background: 'rgba(99,102,241,0.06)', border: '1px solid rgba(99,102,241,0.15)', marginBottom: 14, textAlign: 'center' }}>
+                    <CalendarClock size={16} style={{ color: '#818cf8', margin: '0 auto 6px' }} />
+                    <p style={{ fontSize: 11, color: '#818cf8', fontWeight: 600 }}>Results on election day</p>
+                  </div>
+                )}
 
-                <Link to={`/live/${slugify(activeShape.name)}`} style={{ textDecoration: 'none', display: 'block' }}>
+                <Link to={`${basePath}/${slugify(activeShape.name)}`} style={{ textDecoration: 'none', display: 'block' }}>
                   <div
                     style={{ padding: '8px 14px', borderRadius: 8, background: 'rgba(99,102,241,0.12)', border: '1px solid rgba(99,102,241,0.3)', textAlign: 'center', fontSize: 12, fontWeight: 600, color: '#818cf8', cursor: 'pointer' }}
                     onMouseEnter={e => e.currentTarget.style.background = 'rgba(99,102,241,0.2)'}
-                    onMouseLeave={e => e.currentTarget.style.background = 'rgba(99,102,241,0.12)'}>
-                    View Nominations →
+                    onMouseLeave={e => e.currentTarget.style.background = 'rgba(99,102,241,0.12)'}
+                  >
+                    {hasLiveData ? 'View Live Results →' : 'View Nominations →'}
                   </div>
                 </Link>
               </motion.div>
@@ -290,7 +328,7 @@ export default function LiveMapView() {
 
             {/* Alliance nomination counts */}
             <div className="card" style={{ padding: '16px 20px', marginTop: 12 }}>
-              <p style={{ fontSize: 11, fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 12 }}>Nominations</p>
+              <p style={{ fontSize: 11, fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 12 }}>{hasLiveData ? 'Live Results' : 'Nominations'}</p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                 {ALLIANCES_ORDER.filter(a => allianceCounts[a]).map(a => {
                   const color = ALLIANCE_COLORS[a] ?? '#607d8b';

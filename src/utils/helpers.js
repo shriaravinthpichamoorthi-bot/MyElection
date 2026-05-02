@@ -1,14 +1,64 @@
 export const PARTY_COLORS = {
+  // Tamil Nadu
   DMK: '#e53935', INC: '#1565c0', AIADMK: '#1b5e20', ADMK: '#1b5e20',
   BJP: '#f57c00', CPM: '#b71c1c', CPI: '#c62828', PMK: '#ff8f00',
   MDMK: '#6a1b9a', VCK: '#0d47a1', DMDK: '#f9a825', MNM: '#00838f',
-  NTK: '#4a148c', TVK: '#00695c', IND: '#607d8b', Others: '#607d8b',
+  NTK: '#4a148c', TVK: '#00695c',
+  // Bihar
+  'JD(U)': '#2E8B57', 'LJP-RV': '#FFD700', HAM: '#A0522D',
+  RJD: '#008000', 'CPI(ML)L': '#FF0000', 'CPI(ML)(L)': '#FF0000',
+  'CPI(M)': '#FF0000', 'CPI-ML': '#FF0000', JSP: '#FFD700',
+  AIMIM: '#008000', BSP: '#0000FF', AAP: '#66CCFF',
+  'Jan Suraaj Party': '#FFD700',
+  // Fallback
+  IND: '#607d8b', Others: '#607d8b',
 };
 
+export const PARTY_TO_ALLIANCE = {
+  // NDA
+  'Bharatiya Janata Party': 'NDA', BJP: 'NDA',
+  'Janata Dal (United)': 'NDA', 'JD(U)': 'NDA',
+  'Lok Janshakti Party (Ram Vilas)': 'NDA', 'LJP-RV': 'NDA',
+  'Hindustani Awam Morcha': 'NDA', HAM: 'NDA',
+  'Hindustani Awam Morcha (Secular)': 'NDA', 'HAM-S': 'NDA',
+  'Rashtriya Lok Morcha': 'NDA', RLM: 'NDA',
+  // MGB
+  'Rashtriya Janata Dal': 'MGB', RJD: 'MGB',
+  'Indian National Congress': 'MGB', INC: 'MGB',
+  'Communist Party of India (Marxist–Leninist) Liberation': 'MGB', 'CPI(ML)L': 'MGB',
+  'Communist Party of India (Marxist-Leninist) (Liberation)': 'MGB',
+  'Communist Party of India': 'MGB', CPI: 'MGB',
+  'Communist Party of India (Marxist)': 'MGB', 'CPI(M)': 'MGB',
+  'Indian Inclusive Party': 'MGB', IIP: 'MGB',
+  // GDA
+  'All India Majlis-e-Ittehadul Muslimeen': 'GDA', AIMIM: 'GDA',
+  'Rashtriya Lok Janshakti Party': 'GDA', RLJP: 'GDA',
+  // Others
+  'Jan Suraaj Party': 'Others', JSP: 'Others',
+  'Bahujan Samaj Party': 'Others', BSP: 'Others',
+  'Aam Aadmi Party': 'Others', AAP: 'Others',
+  Independents: 'Others', IND: 'Others',
+};
+
+// Generate a party color tinted by its alliance color
+export function partyColorByAlliance(party, allianceColors = {}) {
+  const alliance = PARTY_TO_ALLIANCE[party];
+  const baseColor = PARTY_COLORS[party] || '#607d8b';
+  const allianceColor = allianceColors[alliance] || ALLIANCE_COLORS[alliance] || '#607d8b';
+  // Return the alliance color for chart consistency, but we could blend them
+  return allianceColor;
+}
+
 export const ALLIANCE_COLORS = {
+  // Tamil Nadu
   'DMK Alliance': '#e53935', 'AIADMK Alliance': '#1b5e20',
   'ADMK Alliance': '#1b5e20', 'BJP Alliance': '#f57c00',
-  NTK: '#4a148c', DMDK: '#f9a825', Others: '#607d8b',
+  NTK: '#4a148c', DMDK: '#f9a825',
+  // Bihar
+  NDA: '#2E8B57', MGB: '#228B22',
+  'Mahagathbandhan (Grand Alliance)': '#228B22',
+  // Fallback
+  Others: '#607d8b', IND: '#607d8b',
 };
 
 export function partyColor(party, partyColors = {}) {

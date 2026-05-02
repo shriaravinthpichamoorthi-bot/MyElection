@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import {
   Search, Menu, X, BarChart3, MapPin, Users, TrendingUp,
   GitCompare, Home, Globe, Map, Zap, ChevronRight, ChevronLeft, Radio,
@@ -108,6 +108,7 @@ function SidebarContent({ onNav, collapsed, onToggle }) {
 }
 
 export default function Layout({ children }) {
+  const reduceMotion = useReducedMotion();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(() => localStorage.getItem('sidebar-collapsed') === 'true');
   const [query, setQuery] = useState('');
@@ -121,17 +122,21 @@ export default function Layout({ children }) {
 
   useEffect(() => { setMobileOpen(false); }, [pathname]);
 
+  // Route search to live pages when user is on a live page
+  const isLivePage = pathname.startsWith('/live') || pathname.startsWith('/bihar/live');
+  const liveBase = pathname.startsWith('/bihar/live') ? '/bihar/live' : '/live';
+
   useEffect(() => {
     if (!query.trim() || !data) { setResults([]); return; }
     const q = query.toLowerCase();
     const c = data.constituencies.filter(x => x.toLowerCase().includes(q)).slice(0, 4)
-      .map(x => ({ type: 'constituency', label: x, to: `/constituency/${slugify(x)}` }));
+      .map(x => ({ type: 'constituency', label: x, to: isLivePage ? `${liveBase}/${slugify(x)}` : `/constituency/${slugify(x)}` }));
     const d = data.districts.filter(x => x.toLowerCase().includes(q)).slice(0, 2)
-      .map(x => ({ type: 'district', label: x, to: `/district/${slugify(x)}` }));
+      .map(x => ({ type: 'district', label: x, to: isLivePage ? `${liveBase}/district/${slugify(x)}` : `/district/${slugify(x)}` }));
     const k = Object.keys(data.candidateMap).filter(x => x.includes(q)).slice(0, 2)
       .map(x => ({ type: 'candidate', label: data.candidateMap[x].name, to: `/candidate/${slugify(data.candidateMap[x].name)}` }));
     setResults([...c, ...d, ...k]);
-  }, [query, data]);
+  }, [query, data, isLivePage, liveBase]);
 
   function pick(to) { setQuery(''); setResults([]); nav(to); }
 
@@ -239,7 +244,7 @@ export default function Layout({ children }) {
         {/* Content */}
         <main style={{ flex: 1, padding: '32px' }} id="main-pad">
           <style>{`@media(max-width:640px){#main-pad{padding:16px!important}}`}</style>
-          <motion.div key={pathname} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.22, ease: 'easeOut' }}>
+          <motion.div key={pathname} initial={reduceMotion ? { opacity: 1 } : { opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={reduceMotion ? {} : { duration: 0.22, ease: 'easeOut' }}>
             <div style={{ maxWidth: 1200, margin: '0 auto', width: '100%' }}>
               {children}
             </div>
@@ -247,7 +252,9 @@ export default function Layout({ children }) {
         </main>
 
         <footer style={{ padding: '20px 32px', borderTop: '1px solid #1e293b', textAlign: 'center' }}>
-          <p style={{ fontSize: 11, color: '#334155' }}>Tamil Nadu Election Intelligence Portal · 2001–2026 · 234 constituencies · 38 districts</p>
+          <p style={{ fontSize: 11, color: '#334155' }}>
+            {pathname.startsWith('/bihar') ? 'Bihar' : 'Tamil Nadu'} Election Intelligence Portal · 2001–2026 · {pathname.startsWith('/bihar') ? '243' : '234'} constituencies · {pathname.startsWith('/bihar') ? '38' : '38'} districts
+          </p>
         </footer>
       </div>
     </div>

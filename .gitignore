@@ -1,3 +1,27 @@
+# Environment files (never commit secrets)
+.env
+.env.local
+server/.env
+
+# Python artifacts
+__pycache__/
+*.pyc
+*.pyo
+
+# Scraper artifacts
+server/Election Commission of India_files/
+server/sample.html
+server/bihar-consti
+server/api_full_results.json
+server/api_constituency_names.json
+server/bihar_candidates_frontend.json
+server_log.txt
+
+# Raw HTML research files
+*.html
+*_files/
+bihar_jina.md
+
 # Logs
 logs
 *.log
