@@ -100,14 +100,19 @@ CREATE TABLE IF NOT EXISTS live_meta (
 ALTER TABLE live_constituencies ENABLE ROW LEVEL SECURITY;
 ALTER TABLE live_meta ENABLE ROW LEVEL SECURITY;
 
--- Create policy to allow all reads (adjust for your auth setup)
-CREATE POLICY IF NOT EXISTS "Allow public read" ON live_constituencies
-    FOR SELECT USING (true);
-CREATE POLICY IF NOT EXISTS "Allow public read meta" ON live_meta
-    FOR SELECT USING (true);
+-- Create policies (wrapped in DO blocks to safely skip if already exists)
+DO $$ BEGIN
+    CREATE POLICY "Allow public read" ON live_constituencies FOR SELECT USING (true);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
--- Create policy to allow service-role writes
-CREATE POLICY IF NOT EXISTS "Allow service writes" ON live_constituencies
-    FOR ALL USING (true) WITH CHECK (true);
-CREATE POLICY IF NOT EXISTS "Allow service writes meta" ON live_meta
-    FOR ALL USING (true) WITH CHECK (true);
+DO $$ BEGIN
+    CREATE POLICY "Allow public read meta" ON live_meta FOR SELECT USING (true);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+    CREATE POLICY "Allow service writes" ON live_constituencies FOR ALL USING (true) WITH CHECK (true);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+    CREATE POLICY "Allow service writes meta" ON live_meta FOR ALL USING (true) WITH CHECK (true);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
