@@ -2,7 +2,9 @@ import asyncio
 import json
 import logging
 import os
+import re
 import sys
+from difflib import SequenceMatcher
 from contextlib import asynccontextmanager
 
 if sys.platform == "win32":
@@ -86,33 +88,61 @@ def _check_rate_limit(client_host: str, limit: int = 10, window: int = 60) -> bo
     return True
 
 
+def _norm(name: str) -> str:
+    """Strip all non-alphanumeric chars and lowercase for fuzzy comparison."""
+    return re.sub(r'[^a-z0-9]', '', name.lower()) if name else ''
+
+
 def _load_party_to_alliance_map():
-    """Build a map from party name/short name to alliance name."""
+    """Build exact and normalized maps from party name/short to alliance name."""
     map_path = os.path.join(os.path.dirname(__file__), "parties_alliances.json")
     if not os.path.exists(map_path):
-        return {}
+        return {}, {}
     try:
         with open(map_path, "r", encoding="utf-8") as f:
             data = json.load(f)
     except Exception:
-        return {}
-    result = {}
+        return {}, {}
+    exact, normalized = {}, {}
     for alliance in data.get("alliances", []):
         alliance_name = alliance.get("name", "")
         for party in alliance.get("parties", []):
             for key in (party.get("name", ""), party.get("short", "")):
                 if key:
-                    result[key.lower()] = alliance_name
-    return result
+                    exact[key.lower().strip()] = alliance_name
+                    nk = _norm(key)
+                    if nk:
+                        normalized[nk] = alliance_name
+    return exact, normalized
 
 
-_party_to_alliance = _load_party_to_alliance_map()
+_party_exact_map, _party_norm_map = _load_party_to_alliance_map()
 
 
 def _alliance_for_party(party: Optional[str]) -> Optional[str]:
     if not party:
         return None
-    return _party_to_alliance.get(party.lower().strip())
+    key = party.lower().strip()
+    # Pass 1: exact match
+    if key in _party_exact_map:
+        return _party_exact_map[key]
+    # Pass 2: normalized match — handles punctuation/spacing variations
+    # e.g. "CPI (M)" matches "CPI(M)", "D.M.K" matches "DMK"
+    nk = _norm(party)
+    if nk in _party_norm_map:
+        return _party_norm_map[nk]
+    # Pass 3: difflib similarity — handles minor spelling differences
+    # e.g. "Munnettra" vs "Munnetra", threshold 0.88 avoids false positives
+    best_ratio, best_alliance = 0.0, None
+    for known, alliance in _party_exact_map.items():
+        ratio = SequenceMatcher(None, key, known).ratio()
+        if ratio > best_ratio:
+            best_ratio = ratio
+            best_alliance = alliance
+    if best_ratio >= 0.88:
+        logger.debug("Fuzzy party match: %r → %r (%.2f)", party, best_alliance, best_ratio)
+        return best_alliance
+    return None
 
 
 def _normalize_constituency_alliances(constituencies: dict):
