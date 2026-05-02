@@ -1,3 +1,16 @@
+/* Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .skeleton { animation: none !important; background: #1e293b !important; }
+  * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+}
+
+.live-tab-idle:hover { color: #94a3b8 !important; }
+.constituency-link:hover { color: #c7d2fe !important; }
+.constituency-link:focus-visible { outline: 2px solid #6366f1; outline-offset: 2px; border-radius: 4px; }
+.live-tab-idle:focus-visible { color: #94a3b8 !important; outline: 2px solid #6366f1; outline-offset: -2px; border-radius: 6px 6px 0 0; }
+.live-tab-active:hover { color: #a5b4fc !important; }
+.live-tab-active:focus-visible { outline: 2px solid #6366f1; outline-offset: -2px; border-radius: 6px 6px 0 0; }
+
 .counter {
   font-size: 16px;
   padding: 5px 10px;

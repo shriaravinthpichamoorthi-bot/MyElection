@@ -1,0 +1,81 @@
+{
+  "alliances": [
+    {
+      "name": "DMK Alliance",
+      "full_name": "Secular Progressive Alliance",
+      "color": "#CC0000",
+      "parties": [
+        { "name": "Dravida Munnetra Kazhagam", "short": "DMK", "color": "#CC0000" },
+        { "name": "Indian National Congress", "short": "INC", "color": "#CC0000" },
+        { "name": "Marumalarchi Dravida Munnetra Kazhagam", "short": "MDMK", "color": "#CC0000" },
+        { "name": "Viduthalai Chiruthaigal Katchi", "short": "VCK", "color": "#CC0000" },
+        { "name": "Communist Party of India (Marxist)", "short": "CPI(M)", "color": "#CC0000" },
+        { "name": "Communist Party of India", "short": "CPI", "color": "#CC0000" },
+        { "name": "Desiya Murpokku Dravida Kazhagam", "short": "DMDK", "color": "#CC0000" },
+        { "name": "Indian Union Muslim League", "short": "IUML", "color": "#CC0000" },
+        { "name": "Kongunadu Makkal Desia Katchi", "short": "KMDK", "color": "#CC0000" },
+        { "name": "Manithaneya Makkal Katchi", "short": "MMK", "color": "#CC0000" },
+        { "name": "Manithaneya Jananayaga Katchi", "short": "MJK", "color": "#CC0000" },
+        { "name": "Social Democratic Party of India", "short": "SDPI", "color": "#CC0000" },
+        { "name": "Tamilar Desam Katchi", "short": "TDK", "color": "#CC0000" },
+        { "name": "Mukkulathor Pulipadai", "short": "MP", "color": "#CC0000" }
+      ]
+    },
+    {
+      "name": "AIADMK",
+      "full_name": "AIADMK-led Alliance",
+      "color": "#006400",
+      "parties": [
+        { "name": "All India Anna Dravida Munnetra Kazhagam", "short": "AIADMK", "color": "#006400" },
+        { "name": "Bharatiya Janata Party", "short": "BJP", "color": "#006400" },
+        { "name": "Pattali Makkal Katchi", "short": "PMK", "color": "#006400" },
+        { "name": "Amma Makkal Munnetra Kazhagam", "short": "AMMK", "color": "#006400" },
+        { "name": "Tamil Maanila Congress (Moopanar)", "short": "TMC(M)", "color": "#006400" },
+        { "name": "Tamil Maanila Congress", "short": "TMC", "color": "#006400" },
+        { "name": "Indhiya Jananayaga Katchi", "short": "IJK", "color": "#006400" },
+        { "name": "Puratchi Bharatham Katchi", "short": "PBK", "color": "#006400" },
+        { "name": "Puthiya Needhi Katchi", "short": "PNK", "color": "#006400" },
+        { "name": "Singa Tamizhar Munnetra Kazhagam", "short": "STMK", "color": "#006400" },
+        { "name": "Tamil Maanila Bahujan Samaj Party", "short": "TMBSP", "color": "#006400" },
+        { "name": "South Indian Forward Bloc", "short": "SIFB", "color": "#006400" },
+        { "name": "Tamizhaga Makkal Munnetra Kazhagam", "short": "TMMK", "color": "#006400" }
+      ]
+    },
+    {
+      "name": "NTK",
+      "full_name": "Naam Tamilar Katchi",
+      "color": "#212121",
+      "parties": [
+        { "name": "Naam Tamilar Katchi", "short": "NTK", "color": "#212121" }
+      ]
+    },
+    {
+      "name": "TVK",
+      "full_name": "Tamilaga Vettri Kazhagam",
+      "color": "#FDD835",
+      "parties": [
+        { "name": "Tamilaga Vettri Kazhagam", "short": "TVK", "color": "#FDD835" }
+      ]
+    },
+    {
+      "name": "APMK-AIPTMMK",
+      "full_name": "APMK-AIPTMMK Alliance",
+      "color": "#795548",
+      "parties": [
+        { "name": "All India Puratchi Thalaivar Makkal Munnetra Kazhagam", "short": "AIPTMMK", "color": "#795548" },
+        { "name": "Ayya Pattali Makkal Katchi", "short": "APMK", "color": "#795548" },
+        { "name": "Pasumpon Makkal Desam", "short": "PMD", "color": "#795548" },
+        { "name": "Vellalar Munnetra Kazhagam", "short": "VMK", "color": "#795548" }
+      ]
+    },
+    {
+      "name": "Others",
+      "full_name": "Others / Independents",
+      "color": "#607d8b",
+      "parties": [
+        { "name": "Bahujan Samaj Party", "short": "BSP", "color": "#607d8b" },
+        { "name": "Independents", "short": "IND", "color": "#607d8b" }
+      ]
+    }
+  ]
+}

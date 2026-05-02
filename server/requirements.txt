@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+playwright
+beautifulsoup4
+pydantic
+apscheduler
+python-multipart
+supabase
+python-dotenv
