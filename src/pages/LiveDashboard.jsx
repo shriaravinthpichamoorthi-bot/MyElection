@@ -81,28 +81,47 @@ export default function LiveDashboard({
   const { loading, allResults, liveMeta, lastUpdated, allianceColors, apiError } = useLiveResults();
   const basePath = useLiveBasePath();
 
-  const { nominations, totalCandidates } = useMemo(() => {
-    if (!allResults) return { nominations: {}, totalCandidates: 0 };
-    const nom = {};
+  const { totalCandidates } = useMemo(() => {
+    if (!allResults) return { totalCandidates: 0 };
     let total = 0;
-    Object.values(allResults).forEach(r => {
-      (r.candidates ?? []).forEach(c => {
-        const a = c.alliance ?? 'Others';
-        nom[a] = (nom[a] || 0) + 1;
-        total++;
-      });
-    });
-    return { nominations: nom, totalCandidates: total };
+    Object.values(allResults).forEach(r => { total += (r.candidates ?? []).length; });
+    return { totalCandidates: total };
   }, [allResults]);
 
+  // Count how many constituencies each alliance has at least one candidate in
   const constituencyNominations = useMemo(() => {
     if (!allResults) return {};
     const nom = {};
     Object.values(allResults).forEach(r => {
-      const firstAlliance = r.candidates?.[0]?.alliance;
-      if (firstAlliance) nom[firstAlliance] = (nom[firstAlliance] || 0) + 1;
+      const seen = new Set();
+      (r.candidates ?? []).forEach(c => {
+        const a = c.alliance;
+        if (a && !seen.has(a)) { seen.add(a); nom[a] = (nom[a] || 0) + 1; }
+      });
     });
     return nom;
+  }, [allResults]);
+
+  // Top parties by nomination count (excluding pure independents)
+  const partyNominations = useMemo(() => {
+    if (!allResults) return [];
+    const counts = {};
+    Object.values(allResults).forEach(r => {
+      (r.candidates ?? []).forEach(c => {
+        if (c.alliance === 'IND') return;
+        const party = c.party;
+        const partyFull = c.partyFull || c.party;
+        const alliance = c.alliance || 'Others';
+        if (party) {
+          if (!counts[party]) counts[party] = { count: 0, alliance, partyFull };
+          counts[party].count++;
+        }
+      });
+    });
+    return Object.entries(counts)
+      .sort((a, b) => b[1].count - a[1].count)
+      .slice(0, 15)
+      .map(([party, { count, alliance, partyFull }]) => ({ party, partyFull, count, alliance }));
   }, [allResults]);
 
   const totalConstituencies = propTotalConstituencies ?? (allResults ? Object.keys(allResults).length : 0);
@@ -369,20 +388,21 @@ export default function LiveDashboard({
               <Users size={12} style={{ display: 'inline', marginRight: 6 }} />
               Candidate Nominations
             </h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {alliancesOrder.filter(a => nominations[a]).map(a => {
-                const color = allianceColors[a] ?? '#607d8b';
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              {partyNominations.map(({ party, partyFull, count, alliance }) => {
+                const color = allianceColors[alliance] ?? '#607d8b';
                 return (
-                  <div key={a} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <Link key={party} to={`${basePath}/constituencies?party=${encodeURIComponent(party)}`}
+                    style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8, padding: '3px 0' }}
+                    onMouseEnter={e => e.currentTarget.style.opacity = '0.75'}
+                    onMouseLeave={e => e.currentTarget.style.opacity = '1'}>
                     <div style={{ width: 8, height: 8, borderRadius: 2, background: color, flexShrink: 0 }} />
-                    <span style={{ fontSize: 12, color: '#94a3b8', flex: 1 }}>{a}</span>
-                    <span style={{ fontSize: 13, fontWeight: 700, color, fontVariantNumeric: 'tabular-nums' }}>
-                      {nominations[a]}
-                    </span>
-                  </div>
+                    <span style={{ fontSize: 12, color: '#94a3b8', flex: 1 }}>{partyFull}</span>
+                    <span style={{ fontSize: 13, fontWeight: 700, color, fontVariantNumeric: 'tabular-nums' }}>{count}</span>
+                  </Link>
                 );
               })}
-              <div style={{ marginTop: 12, paddingTop: 10, borderTop: '1px solid #1e293b', display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#475569' }}>
+              <div style={{ marginTop: 10, paddingTop: 10, borderTop: '1px solid #1e293b', display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#475569' }}>
                 <span>{totalConstituencies} constituencies</span>
                 <span>{totalCandidates.toLocaleString('en-IN')} total candidates</span>
               </div>
