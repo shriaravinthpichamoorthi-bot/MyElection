@@ -21,6 +21,7 @@ load_dotenv()
 def _clean_name(text):
     if not text:
         return text
+    text = re.sub(r'<[^>]+>', '', text)  # strip HTML tags
     return re.sub(r'^[-–—•·►▸\s*]+', '', text).strip()
 
 
@@ -32,6 +33,7 @@ def _clean_party(text):
     """
     if not text:
         return text
+    text = re.sub(r'<[^>]+>', '', text)  # strip HTML tags
     # Split on the nested trend heading and keep only the party name
     text = re.split(r'\s*Party Wise State Trends', text, flags=re.IGNORECASE)[0]
     # Strip trailing non-word chars (icons, separators) but keep ) for abbreviations

@@ -21,4 +21,4 @@ EXPOSE 8000
 
 # Use xvfb-run to provide a virtual display for Chrome
 # This allows Playwright to run with headless=False on a server
-CMD ["sh", "-c", "xvfb-run -a uvicorn main:app --host 0.0.0.0 --port 8000"]
+CMD ["sh", "-c", "xvfb-run -a uvicorn main:app --host 0.0.0.0 --port 8000 --proxy-headers --forwarded-allow-ips '*'"]

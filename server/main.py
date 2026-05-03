@@ -15,8 +15,11 @@ from typing import Optional
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.interval import IntervalTrigger
+from cachetools import TTLCache
 from fastapi import BackgroundTasks, FastAPI, Header, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from starlette.middleware.base import BaseHTTPMiddleware
 
 from config import (
     ADMIN_SECRET,
@@ -75,18 +78,30 @@ _detail_sem = asyncio.Semaphore(DETAIL_CONCURRENCY)  # Configurable via env
 _refresh_lock = asyncio.Lock()      # Prevent parallel refresh calls
 
 # ── Simple in-memory rate limiter ──
-_rate_limit_store: dict = {}
+# TTLCache auto-evicts entries after 120s, bounding memory usage
+_rate_limit_store: TTLCache = TTLCache(maxsize=10_000, ttl=120)
+_rate_limit_lock = asyncio.Lock()
+_last_admin_refresh: float = 0.0
 
-def _check_rate_limit(client_host: str, limit: int = 10, window: int = 60) -> bool:
+
+def _get_client_ip(request: Request) -> str:
+    forwarded = request.headers.get("X-Forwarded-For")
+    if forwarded:
+        return forwarded.split(",")[0].strip()
+    return request.client.host if request.client else "unknown"
+
+
+async def _check_rate_limit(client_ip: str, key_prefix: str = "global", limit: int = 120, window: int = 60) -> bool:
     """Return True if request is allowed, False if rate limited."""
     now = time.time()
-    key = f"detail:{client_host}"
-    requests = _rate_limit_store.get(key, [])
-    requests = [t for t in requests if now - t < window]
-    if len(requests) >= limit:
-        return False
-    requests.append(now)
-    _rate_limit_store[key] = requests
+    key = f"{key_prefix}:{client_ip}"
+    async with _rate_limit_lock:
+        timestamps = list(_rate_limit_store.get(key, []))
+        timestamps = [t for t in timestamps if now - t < window]
+        if len(timestamps) >= limit:
+            return False
+        timestamps.append(now)
+        _rate_limit_store[key] = timestamps
     return True
 
 
@@ -381,8 +396,29 @@ app.add_middleware(
     allow_origins=origins,
     allow_credentials=allow_creds,
     allow_methods=["GET", "POST"],
-    allow_headers=["*"],
+    allow_headers=["Content-Type", "Authorization"],
 )
+
+
+@app.middleware("http")
+async def add_security_headers(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+    response.headers["Referrer-Policy"] = "no-referrer"
+    return response
+
+
+@app.middleware("http")
+async def global_rate_limit(request: Request, call_next):
+    # /health is exempt — Railway uses it for health checks
+    if request.url.path == "/health":
+        return await call_next(request)
+    client_ip = _get_client_ip(request)
+    if not await _check_rate_limit(client_ip, key_prefix="global", limit=120, window=60):
+        return JSONResponse({"detail": "Rate limit exceeded — try again later"}, status_code=429)
+    return await call_next(request)
 
 
 @app.get("/health")
@@ -445,9 +481,9 @@ async def get_constituency(const_id: str, request: Request):
     if not const_id.isdigit():
         raise HTTPException(status_code=400, detail="Invalid constituency ID")
 
-    # H2: Rate limiting
-    client_host = request.client.host if request.client else "unknown"
-    if not _check_rate_limit(client_host):
+    # Stricter per-detail rate limit (10/min) on top of the global middleware limit
+    client_ip = _get_client_ip(request)
+    if not await _check_rate_limit(client_ip, key_prefix="detail", limit=10, window=60):
         raise HTTPException(status_code=429, detail="Rate limit exceeded — try again later")
 
     summary = _cache["constituencies"].get(const_id)
@@ -517,8 +553,11 @@ async def get_constituency(const_id: str, request: Request):
 
 
 @app.get("/config")
-async def get_config():
-    """Public configuration values the frontend needs."""
+async def get_config(authorization: Optional[str] = Header(None)):
+    if not ADMIN_SECRET:
+        raise HTTPException(status_code=503, detail="Admin endpoints disabled")
+    if authorization != f"Bearer {ADMIN_SECRET}":
+        raise HTTPException(status_code=401, detail="Unauthorized")
     return {
         "state_code": STATE_CODE,
         "state_name": STATE_NAME,
@@ -534,11 +573,18 @@ async def get_config():
 
 @app.post("/admin/refresh")
 async def admin_refresh(authorization: Optional[str] = Header(None)):
+    global _last_admin_refresh
     if not ADMIN_SECRET:
         raise HTTPException(status_code=503, detail="Admin endpoints disabled")
-    expected = f"Bearer {ADMIN_SECRET}"
-    if authorization != expected:
+    if authorization != f"Bearer {ADMIN_SECRET}":
         raise HTTPException(status_code=401, detail="Unauthorized")
+
+    # Global cooldown: no more than 1 forced scrape per 2 minutes
+    now = time.time()
+    if now - _last_admin_refresh < 120:
+        remaining = int(120 - (now - _last_admin_refresh))
+        raise HTTPException(status_code=429, detail=f"Cooldown active — retry in {remaining}s")
+    _last_admin_refresh = now
 
     await refresh_data()
     return {

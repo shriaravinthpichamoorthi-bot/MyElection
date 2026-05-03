@@ -21,6 +21,9 @@ import LiveDistrictDetail from './pages/LiveDistrictDetail';
 import LiveConstituency from './pages/LiveConstituency';
 import LiveMapView from './pages/LiveMapView';
 
+if (import.meta.env.PROD && !import.meta.env.VITE_BIHAR_API_URL) {
+  throw new Error('VITE_BIHAR_API_URL must be set in production');
+}
 const BIHAR_API_URL = import.meta.env.VITE_BIHAR_API_URL || 'http://127.0.0.1:8000';
 
 const biharApiClient = createApiClient(BIHAR_API_URL);
