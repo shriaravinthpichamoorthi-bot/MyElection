@@ -99,6 +99,7 @@ function MapLegend({ allianceCounts }) {
 export default function LiveMapView() {
   const { loading: liveLoading, allResults, lastUpdated, liveMeta, mapTickMs } = useLiveResults();
   const { data, loading: dataLoading } = useData();
+  const basePath = useLiveBasePath();
   const [geoJson, setGeoJson] = useState(null);
   const [mapLoading, setMapLoading] = useState(true);
   const [selected, setSelected] = useState(null);
