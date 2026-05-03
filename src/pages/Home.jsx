@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
-import { MapPin, BarChart3, GitCompare, Map, ArrowRight, Flame, Shield, TrendingUp, Users } from 'lucide-react';
+import { MapPin, BarChart3, GitCompare, Map, ArrowRight, ArrowRightLeft, Flame, Shield, TrendingUp, Users } from 'lucide-react';
 import { useData } from '../context/DataContext';
 import LoadingSpinner from '../components/LoadingSpinner';
 import StatCard from '../components/StatCard';
@@ -32,8 +32,15 @@ export default function Home() {
   const [selYear, setSelYear] = useState(2021);
   if (loading) return <LoadingSpinner />;
 
-  const { stateSummary, byYear, alliancePerf, womenStats, partyPerf, partyColors, allianceColors, strongholds, districts } = data;
+  const { stateSummary, byYear, alliancePerf, womenStats, partyPerf, partyColors, allianceColors, strongholds, districts, swingData } = data;
   const summary = stateSummary.find(s => s.year === selYear) || stateSummary[0];
+
+  // Calculate swing seats (constituencies with party changes leading to selected year)
+  const swingSeats = Object.values(swingData || {}).filter(swings => {
+    if (!swings.length) return false;
+    const relevantSwing = swings.find(s => s.to === selYear);
+    return relevantSwing?.partyChange;
+  }).length;
 
   const allianceData = Object.entries(alliancePerf[selYear] || {})
     .map(([name, seats]) => ({ name, seats })).sort((a,b) => b.seats-a.seats).slice(0,6);
@@ -95,7 +102,7 @@ export default function Home() {
         {[
           { icon:<Flame size={16} color="#fbbf24" />, label:'Leading Alliance', value:topAlliance?.name||'—', right:<span style={{ fontSize:22, fontWeight:800, color:'#fbbf24' }}>{topAlliance?.seats}</span> },
           { icon:<TrendingUp size={16} color="#34d399" />, label:'State Turnout', value:formatPct(summary?.turnout_pct) },
-          { icon:<Shield size={16} color="#a78bfa" />, label:'Stronghold Seats', value:`${Object.keys(strongholds).length} constituencies` },
+          { icon:<ArrowRightLeft size={16} color="#f87171" />, label:'Swing Seats', value:`${swingSeats} constituencies` },
         ].map((item,i) => (
           <motion.div key={i} {...stagger(i)} className="card"
             style={{ display:'flex', alignItems:'center', gap:12, padding:'14px 18px' }}>

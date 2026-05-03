@@ -3,7 +3,7 @@ export const PARTY_COLORS = {
   DMK: '#e53935', INC: '#1565c0', AIADMK: '#1b5e20', ADMK: '#1b5e20',
   BJP: '#f57c00', CPM: '#b71c1c', CPI: '#c62828', PMK: '#ff8f00',
   MDMK: '#6a1b9a', VCK: '#0d47a1', DMDK: '#f9a825', MNM: '#00838f',
-  NTK: '#4a148c', TVK: '#00695c',
+  NTK: '#a78bfa', TVK: '#00695c',
   // Bihar
   'JD(U)': '#2E8B57', 'LJP-RV': '#FFD700', HAM: '#A0522D',
   RJD: '#008000', 'CPI(ML)L': '#FF0000', 'CPI(ML)(L)': '#FF0000',
@@ -53,7 +53,7 @@ export const ALLIANCE_COLORS = {
   // Tamil Nadu
   'DMK Alliance': '#e53935', 'AIADMK Alliance': '#1b5e20',
   'ADMK Alliance': '#1b5e20', 'BJP Alliance': '#f57c00',
-  NTK: '#4a148c', DMDK: '#f9a825',
+  NTK: '#a78bfa', DMDK: '#f9a825',
   // Bihar
   NDA: '#2E8B57', MGB: '#228B22',
   'Mahagathbandhan (Grand Alliance)': '#228B22',
@@ -96,6 +96,22 @@ export function formatName(str) {
   const initials = tokens.filter(t => t.length === 1).map(t => t.toUpperCase());
   const words = tokens.filter(t => t.length > 1).map(t => t.charAt(0).toUpperCase() + t.slice(1).toLowerCase());
   return [...initials, ...words].join(' ');
+}
+
+export const PARTY_INITIALS = {
+  // Tamil Nadu
+  DMK: 'DMK', INC: 'INC', AIADMK: 'AIADMK', ADMK: 'ADMK',
+  BJP: 'BJP', CPM: 'CPM', CPI: 'CPI', PMK: 'PMK',
+  MDMK: 'MDMK', VCK: 'VCK', DMDK: 'DMDK', MNM: 'MNM',
+  NTK: 'NTK', TVK: 'TVK',
+  // Bihar
+  'JD(U)': 'JDU', 'LJP-RV': 'LJP', HAM: 'HAM',
+  RJD: 'RJD', 'CPI(ML)L': 'CPI(ML)L', 'CPI(ML)(L)': 'CPI(ML)L',
+  'CPI(M)': 'CPIM', 'CPI-ML': 'CPI-ML', JSP: 'JSP',
+};
+
+export function getPartyInitials(party) {
+  return PARTY_INITIALS[party] || party;
 }
 
 export const YEARS = [2001, 2006, 2011, 2016, 2021, 2026];

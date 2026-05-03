@@ -213,11 +213,11 @@ function Nominations2026Table({ candidates, partyColors }) {
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
             <tr className="tbl-head">
-              <th style={{ padding: '10px 16px', textAlign: 'left', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#475569', borderBottom: '1px solid #1e293b' }}>#</th>
-              <th style={{ padding: '10px 16px', textAlign: 'left', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#475569', borderBottom: '1px solid #1e293b' }}>Candidate</th>
-              <th style={{ padding: '10px 16px', textAlign: 'left', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#475569', borderBottom: '1px solid #1e293b' }}>Party</th>
-              <th style={{ padding: '10px 16px', textAlign: 'left', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#475569', borderBottom: '1px solid #1e293b' }}>Alliance</th>
-              <th style={{ padding: '10px 16px', textAlign: 'left', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#475569', borderBottom: '1px solid #1e293b' }}>Symbol</th>
+              <th>#</th>
+              <th>Candidate</th>
+              <th>Party</th>
+              <th>Alliance</th>
+              <th>Symbol</th>
             </tr>
           </thead>
           <tbody>
@@ -262,12 +262,12 @@ function HistoricalTable({ history, partyColors }) {
           <thead>
             <tr className="tbl-head">
               <SortTh label="Year" col="year" activeCol={col} dir={dir} onSort={toggle} />
-              <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#475569', borderBottom: '1px solid #1e293b' }}>Winner</th>
-              <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#475569', borderBottom: '1px solid #1e293b' }}>Party</th>
-              <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#475569', borderBottom: '1px solid #1e293b', whiteSpace: 'nowrap' }}>Alliance</th>
+              <th>Winner</th>
+              <th>Party</th>
+              <th style={{ whiteSpace: 'nowrap' }}>Alliance</th>
               <SortTh label="Votes" col="winner_votes" activeCol={col} dir={dir} onSort={toggle} />
               <SortTh label="Vote%" col="winner_vote_pct" activeCol={col} dir={dir} onSort={toggle} />
-              <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#475569', borderBottom: '1px solid #1e293b', whiteSpace: 'nowrap' }}>Runner-Up</th>
+              <th style={{ whiteSpace: 'nowrap' }}>Runner-Up</th>
               <SortTh label="Margin" col="margin" activeCol={col} dir={dir} onSort={toggle} />
               <SortTh label="Margin%" col="margin_pct" activeCol={col} dir={dir} onSort={toggle} />
               <SortTh label="Turnout%" col="turnout_pct" activeCol={col} dir={dir} onSort={toggle} />

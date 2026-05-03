@@ -250,51 +250,51 @@ export default function LiveDashboard({
       {/* Charts - only when live */}
       {hasLiveData && (
         <div style={{ display: 'grid', gap: 16, marginBottom: 24 }} id="charts-grid">
-          <style>{`#charts-grid{grid-template-columns:1fr 1fr}@media(max-width:860px){#charts-grid{grid-template-columns:1fr}}`}</style>
+          <style>{`#charts-grid{grid-template-columns:1fr}@media(max-width:860px){#charts-grid{grid-template-columns:1fr}}`}</style>
           <SeatChart title="Alliance Seats" data={allianceChartData} filterKey="alliance" basePath={basePath} />
-          {/* Live Results moved here (was left panel) */}
+          
+          {/* Live Results by Party */}
           <div className="card" style={{ padding: '20px 24px' }}>
             <h2 style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-subtle)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 16 }}>
-              {declaredTitle || `Live Results — ${declared} Declared`}
+              {declaredTitle || `Live Results — ${declared} Declared (By Party)`}
             </h2>
-            {/* Stacked bar */}
+            {/* Stacked bar - by party */}
             <div style={{ display: 'flex', height: 24, borderRadius: 8, overflow: 'hidden', gap: 1, marginBottom: 16 }}>
-              {alliancesOrder.filter(a => allianceTally[a]).map(a => {
-                const color = allianceColors[a] ?? '#607d8b';
-                const count = allianceTally[a] ?? 0;
-                const pct = totalConstituencies ? (count / totalConstituencies) * 100 : 0;
+              {partyChartData.map(({ name, value, color }, idx) => {
+                const pct = totalConstituencies ? (value / totalConstituencies) * 100 : 0;
                 return (
-                  <Link key={a} to={`${basePath}/constituencies?alliance=${encodeURIComponent(a)}`} style={{ width: `${pct}%`, background: color, position: 'relative', minWidth: count > 3 ? 2 : 0, display: 'block' }} title={`${a}: ${count}`}>
-                    {count > 8 && (
+                  <Link key={idx} to={`${basePath}/constituencies?party=${encodeURIComponent(name)}`} style={{ width: `${pct}%`, background: color, position: 'relative', minWidth: value > 3 ? 2 : 0, display: 'block' }} title={`${name}: ${value}`}>
+                    {value > 3 && (
                       <span style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%,-50%)', fontSize: 10, fontWeight: 800, color: '#fff', whiteSpace: 'nowrap', textShadow: '0 1px 3px rgba(0,0,0,0.7)' }}>
-                        {count}
+                        {value}
                       </span>
                     )}
                   </Link>
                 );
               })}
             </div>
+            {/* Party breakdown */}
             <div>
-              {alliancesOrder.filter(a => allianceTally[a]).map(a => (
-                <Link key={a} to={`${basePath}/constituencies?alliance=${encodeURIComponent(a)}`} style={{ textDecoration: 'none', display: 'block' }}>
+              {partyChartData.map(({ name, value, color }) => (
+                <Link key={name} to={`${basePath}/constituencies?party=${encodeURIComponent(name)}`} style={{ textDecoration: 'none', display: 'block' }}>
                   <div style={{ padding: '10px 0', borderBottom: '1px solid #0f172a', cursor: 'pointer' }}
                     onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'}
                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 5 }}>
-                      <div style={{ width: 10, height: 10, borderRadius: 2, background: allianceColors[a] ?? '#607d8b', flexShrink: 0 }} />
-                      <span style={{ flex: 1, fontSize: 13, fontWeight: 600, color: '#cbd5e1' }}>{a}</span>
-                      <span style={{ fontSize: 15, fontWeight: 800, color: allianceColors[a] ?? '#607d8b' }}>{allianceTally[a] ?? 0}</span>
-                      <span style={{ fontSize: 11, color: 'var(--text-subtle)' }}>seats →</span>
+                      <div style={{ width: 10, height: 10, borderRadius: 2, background: color, flexShrink: 0 }} />
+                      <span style={{ flex: 1, fontSize: 13, fontWeight: 600, color: '#cbd5e1' }}>{name}</span>
+                      <span style={{ fontSize: 15, fontWeight: 800, color: color }}>{value}</span>
+                      <span style={{ fontSize: 11, color: 'var(--text-subtle)' }}>{value === 1 ? 'seat' : 'seats'} →</span>
                     </div>
                     <div style={{ marginLeft: 20, height: 3, borderRadius: 99, background: '#1e293b', overflow: 'hidden' }}>
-                      <div style={{ height: '100%', width: `${totalConstituencies ? ((allianceTally[a] ?? 0) / totalConstituencies) * 100 : 0}%`, background: `${allianceColors[a] ?? '#607d8b'}88`, borderRadius: 99 }} />
+                      <div style={{ height: '100%', width: `${totalConstituencies ? (value / totalConstituencies) * 100 : 0}%`, background: `${color}88`, borderRadius: 99 }} />
                     </div>
                   </div>
                 </Link>
               ))}
             </div>
             <p style={{ fontSize: 12, color: 'var(--text-subtle)', marginTop: 10 }}>
-              Click any alliance to view their leading constituencies →
+              Click any party to view their leading constituencies →
             </p>
           </div>
         </div>

@@ -111,6 +111,7 @@ export default function Layout({ children }) {
   const reduceMotion = useReducedMotion();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(() => localStorage.getItem('sidebar-collapsed') === 'true');
+  const [hovered, setHovered] = useState(false);
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const { data } = useData();
@@ -118,7 +119,7 @@ export default function Layout({ children }) {
   const nav = useNavigate();
   const searchRef = useRef();
 
-  const SIDEBAR_W = collapsed ? 64 : 240;
+  const SIDEBAR_W = (collapsed && !hovered) ? 64 : 240;
 
   useEffect(() => { setMobileOpen(false); }, [pathname]);
 
@@ -162,9 +163,11 @@ export default function Layout({ children }) {
       {/* Desktop sidebar */}
       <aside
         className="sidebar"
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
         style={{ flexShrink: 0, position: 'fixed', top: 0, left: 0, height: '100vh', zIndex: 40, overflow: 'hidden', display: 'none', width: SIDEBAR_W, transition: 'width 0.25s ease' }}
         id="desktop-sidebar">
-        <SidebarContent onNav={() => {}} collapsed={collapsed} onToggle={toggleCollapse} />
+        <SidebarContent onNav={() => {}} collapsed={collapsed && !hovered} onToggle={toggleCollapse} />
       </aside>
 
       <style>{`@media(min-width:1024px){#desktop-sidebar{display:block!important}}`}</style>

@@ -5,7 +5,7 @@ import { getConstituencies, getSummary, getConfig } from '../utils/api';
 const TN_ALLIANCE_COLORS = {
   'DMK Alliance': '#CC0000',
   AIADMK: '#006400',
-  NTK: '#212121',
+  NTK: '#a78bfa',
   TVK: '#FDD835',
   Others: '#607d8b',
   IND: '#607d8b',
