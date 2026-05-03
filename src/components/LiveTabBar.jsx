@@ -33,7 +33,7 @@ export default function LiveTabBar() {
               padding: '10px 18px',
               fontSize: 13,
               fontWeight: active ? 700 : 500,
-              color: active ? '#818cf8' : '#64748b',
+              color: active ? '#818cf8' : 'var(--text-subtle)',
               borderBottom: `2px solid ${active ? '#6366f1' : 'transparent'}`,
               marginBottom: -1,
               cursor: 'pointer',

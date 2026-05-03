@@ -34,7 +34,7 @@ function CandidateRow({ candidate, rank, liveVotes, maxVotes, totalVotes, isWinn
       }}>
       {/* Rank badge */}
       <div style={{ width: 26, height: 26, borderRadius: 7, background: isWinner ? 'rgba(16,185,129,0.2)' : '#1e293b', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-        <span style={{ fontSize: 11, fontWeight: 700, color: isWinner ? '#34d399' : (rank === 0 ? '#a5b4fc' : '#475569') }}>
+        <span style={{ fontSize: 11, fontWeight: 700, color: isWinner ? '#34d399' : (rank === 0 ? '#a5b4fc' : 'var(--text-subtle)') }}>
           {isWinner ? 'W' : `#${rank + 1}`}
         </span>
       </div>
@@ -46,14 +46,14 @@ function CandidateRow({ candidate, rank, liveVotes, maxVotes, totalVotes, isWinn
           {isWinner && <Trophy size={12} style={{ marginLeft: 6, color: '#34d399', display: 'inline', verticalAlign: 'middle' }} />}
         </p>
         <div style={{ display: 'flex', alignItems: 'center', gap: 7, flexWrap: 'wrap' }}>
-          <span style={{ fontSize: 10, fontWeight: 700, color, background: `${color}18`, padding: '2px 7px', borderRadius: 4, border: `1px solid ${color}33` }}>
+          <span style={{ fontSize: 11, fontWeight: 700, color, background: `${color}18`, padding: '2px 7px', borderRadius: 4, border: `1px solid ${color}33` }}>
             {candidate.party}
           </span>
           {candidate.alliance && candidate.alliance !== 'IND' && candidate.alliance !== 'Others' && (
-            <span style={{ fontSize: 10, color: '#64748b' }}>{candidate.alliance}</span>
+            <span style={{ fontSize: 11, color: 'var(--text-subtle)' }}>{candidate.alliance}</span>
           )}
           {candidate.symbol && (
-            <span style={{ fontSize: 10, color: '#334155' }}>· {candidate.symbol}</span>
+            <span style={{ fontSize: 11, color: 'var(--text-subtle)' }}>· {candidate.symbol}</span>
           )}
         </div>
 
@@ -64,11 +64,11 @@ function CandidateRow({ candidate, rank, liveVotes, maxVotes, totalVotes, isWinn
               <div style={{ flex: 1, height: 4, borderRadius: 99, background: '#1e293b', overflow: 'hidden' }}>
                 <div style={{ height: '100%', width: `${voteBarWidth}%`, background: color, borderRadius: 99, transition: 'width 0.5s ease' }} />
               </div>
-              <span style={{ fontSize: 10, fontWeight: 700, color: '#e2e8f0', fontVariantNumeric: 'tabular-nums', minWidth: 50, textAlign: 'right' }}>
+              <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-body)', fontVariantNumeric: 'tabular-nums', minWidth: 50, textAlign: 'right' }}>
                 {liveVotes.toLocaleString('en-IN')}
               </span>
             </div>
-            <span style={{ fontSize: 9, color: '#475569' }}>
+            <span style={{ fontSize: 11, color: 'var(--text-subtle)' }}>
               {((liveVotes / totalVotes) * 100).toFixed(1)}% of counted votes
             </span>
           </div>
@@ -77,15 +77,15 @@ function CandidateRow({ candidate, rank, liveVotes, maxVotes, totalVotes, isWinn
 
       {/* Status badge */}
       {isWinner ? (
-        <span style={{ fontSize: 9, fontWeight: 700, color: '#34d399', background: 'rgba(16,185,129,0.12)', border: '1px solid rgba(16,185,129,0.3)', padding: '3px 8px', borderRadius: 4, flexShrink: 0, whiteSpace: 'nowrap' }}>
+        <span style={{ fontSize: 11, fontWeight: 700, color: '#34d399', background: 'rgba(16,185,129,0.12)', border: '1px solid rgba(16,185,129,0.3)', padding: '3px 8px', borderRadius: 4, flexShrink: 0, whiteSpace: 'nowrap' }}>
           Won
         </span>
       ) : rank === 0 && liveVotes > 0 ? (
-        <span style={{ fontSize: 9, fontWeight: 700, color: '#a5b4fc', background: 'rgba(99,102,241,0.12)', border: '1px solid rgba(99,102,241,0.3)', padding: '3px 8px', borderRadius: 4, flexShrink: 0, whiteSpace: 'nowrap' }}>
+        <span style={{ fontSize: 11, fontWeight: 700, color: '#a5b4fc', background: 'rgba(99,102,241,0.12)', border: '1px solid rgba(99,102,241,0.3)', padding: '3px 8px', borderRadius: 4, flexShrink: 0, whiteSpace: 'nowrap' }}>
           Leading
         </span>
       ) : (
-        <span style={{ fontSize: 9, fontWeight: 700, color: '#475569', background: '#1e293b', border: '1px solid #334155', padding: '3px 8px', borderRadius: 4, flexShrink: 0, whiteSpace: 'nowrap' }}>
+        <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-subtle)', background: '#1e293b', border: '1px solid #334155', padding: '3px 8px', borderRadius: 4, flexShrink: 0, whiteSpace: 'nowrap' }}>
           Awaiting
         </span>
       )}
@@ -237,8 +237,8 @@ export default function LiveConstituency() {
         {/* Title */}
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
           <div>
-            <h1 style={{ fontSize: 24, fontWeight: 800, color: '#f8fafc', marginBottom: 4 }}>{name}</h1>
-            <p style={{ fontSize: 12, color: '#475569' }}>
+            <h1 className="h1" style={{ marginBottom: 4 }}>{name}</h1>
+            <p style={{ fontSize: 13, color: 'var(--text-subtle)' }}>
               {candidates.length} candidates nominated
               {prev2021 && <span> · 2021 winner: <span style={{ color: '#818cf8' }}>{prev2021.winner_name} ({prev2021.winner_party})</span></span>}
               {live?.round && <span> · Round {live.round}</span>}
@@ -267,12 +267,12 @@ export default function LiveConstituency() {
                     : `${leadName} (${leadParty}) is leading`
                   }
                 </p>
-                <p style={{ fontSize: 11, color: '#64748b' }}>
+                <p style={{ fontSize: 13, color: 'var(--text-subtle)' }}>
                   {live.margin > 0 && <span>Margin: +{live.margin.toLocaleString('en-IN')} votes · </span>}
                   {live.status === 'counting' && <span>Counting in progress · </span>}
                   {live.round && <span>Round {live.round}{live.total_rounds ? ` of ${live.total_rounds}` : ''} · </span>}
                   {totalCountedVotes > 0 && <span>{totalCountedVotes.toLocaleString('en-IN')} votes counted · </span>}
-                  {detailUpdated && <span style={{ color: '#475569' }}>Updated {timeAgo(detailUpdated)}</span>}
+                  {detailUpdated && <span>Updated {timeAgo(detailUpdated)}</span>}
                 </p>
               </div>
             </div>
@@ -283,7 +283,7 @@ export default function LiveConstituency() {
         {hasLiveData && liveCandidates && liveCandidates.length >= 2 && (
           <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
             className="card" style={{ padding: '16px 20px' }}>
-            <h3 style={{ fontSize: 11, fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>Race Summary</h3>
+            <h3 className="eyebrow" style={{ marginBottom: 12 }}>Race Summary</h3>
             {(() => {
               const sorted = [...liveCandidates].sort((a, b) => b.votes - a.votes);
               const first = sorted[0];
@@ -293,22 +293,22 @@ export default function LiveConstituency() {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <span style={{ fontSize: 10, fontWeight: 700, color: '#34d399', background: 'rgba(16,185,129,0.12)', padding: '2px 6px', borderRadius: 4 }}>1st</span>
+                      <span style={{ fontSize: 11, fontWeight: 700, color: '#34d399', background: 'rgba(16,185,129,0.12)', padding: '2px 6px', borderRadius: 4 }}>1st</span>
                       <span style={{ fontSize: 13, fontWeight: 600, color: '#f8fafc' }}>{cleanName(first.name)}</span>
-                      <span style={{ fontSize: 10, color: '#64748b' }}>({first.party})</span>
+                      <span style={{ fontSize: 11, color: 'var(--text-subtle)' }}>({first.party})</span>
                     </div>
                     <span style={{ fontSize: 13, fontWeight: 700, color: '#e2e8f0', fontVariantNumeric: 'tabular-nums' }}>{first.votes.toLocaleString('en-IN')}</span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <span style={{ fontSize: 10, fontWeight: 700, color: '#a5b4fc', background: 'rgba(99,102,241,0.12)', padding: '2px 6px', borderRadius: 4 }}>2nd</span>
+                      <span style={{ fontSize: 11, fontWeight: 700, color: '#a5b4fc', background: 'rgba(99,102,241,0.12)', padding: '2px 6px', borderRadius: 4 }}>2nd</span>
                       <span style={{ fontSize: 13, fontWeight: 600, color: '#cbd5e1' }}>{cleanName(second.name)}</span>
-                      <span style={{ fontSize: 10, color: '#64748b' }}>({second.party})</span>
+                      <span style={{ fontSize: 11, color: 'var(--text-subtle)' }}>({second.party})</span>
                     </div>
                     <span style={{ fontSize: 13, fontWeight: 700, color: '#cbd5e1', fontVariantNumeric: 'tabular-nums' }}>{second.votes.toLocaleString('en-IN')}</span>
                   </div>
                   <div style={{ paddingTop: 8, borderTop: '1px solid #1e293b', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontSize: 11, color: '#94a3b8' }}>Difference</span>
+                    <span style={{ fontSize: 12, color: 'var(--text-subtle)' }}>Difference</span>
                     <span style={{ fontSize: 13, fontWeight: 800, color: isDeclared ? '#34d399' : '#fbbf24', fontVariantNumeric: 'tabular-nums' }}>+{diff.toLocaleString('en-IN')} votes</span>
                   </div>
                 </div>
@@ -323,7 +323,7 @@ export default function LiveConstituency() {
             <CalendarClock size={18} style={{ color: '#818cf8', flexShrink: 0 }} />
             <div>
               <p style={{ fontSize: 13, fontWeight: 700, color: '#a5b4fc', marginBottom: 1 }}>Live results pending</p>
-              <p style={{ fontSize: 11, color: '#64748b' }}>Live vote counts and the declared winner will update automatically once counting begins.</p>
+              <p style={{ fontSize: 13, color: 'var(--text-subtle)' }}>Live vote counts and the declared winner will update automatically once counting begins.</p>
             </div>
           </div>
         )}
@@ -333,12 +333,12 @@ export default function LiveConstituency() {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <Radio size={14} style={{ color: '#ef4444' }} />
-              <h2 style={{ fontSize: 13, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.07em' }}>
+              <h2 className="eyebrow">
                 {hasLiveData ? 'Live Results — 2026' : 'Candidates — 2026 Nominations'}
               </h2>
             </div>
             {detailUpdated && (
-              <span style={{ fontSize: 10, color: '#475569', fontVariantNumeric: 'tabular-nums' }}>
+              <span style={{ fontSize: 11, color: 'var(--text-subtle)', fontVariantNumeric: 'tabular-nums' }}>
                 Updated {timeAgo(detailUpdated)}
               </span>
             )}
@@ -352,7 +352,7 @@ export default function LiveConstituency() {
                     animate={reduceMotion ? {} : { y: [0, -6, 0] }} transition={{ duration: 0.6, delay: i * 0.15, repeat: Infinity }} />
                 ))}
               </div>
-              <span style={{ fontSize: 12, color: '#64748b' }}>Fetching live vote details…</span>
+              <span style={{ fontSize: 13, color: 'var(--text-subtle)' }}>Fetching live vote details…</span>
             </div>
           )}
 
@@ -370,16 +370,14 @@ export default function LiveConstituency() {
           ))} 
 
           {candidates.length === 0 && (
-            <p style={{ color: '#334155', fontSize: 13, textAlign: 'center', padding: '20px 0' }}>No candidate data available</p>
+            <p style={{ color: 'var(--text-muted)', fontSize: 13, textAlign: 'center', padding: '20px 0' }}>No candidate data available</p>
           )}
         </div>
 
         {/* 2021 historical context */}
         {prev2021 && (
           <div className="card" style={{ padding: '18px 22px' }}>
-            <h2 style={{ fontSize: 13, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 12 }}>
-              2021 Result — Context
-            </h2>
+            <h2 className="eyebrow" style={{ marginBottom: 12 }}>2021 Result — Context</h2>
             <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
               {[
                 { label: 'Winner', value: prev2021.winner_name, color: '#f8fafc' },
@@ -389,7 +387,7 @@ export default function LiveConstituency() {
                 prev2021.turnout_pct && { label: 'Turnout', value: `${prev2021.turnout_pct.toFixed(1)}%`, color: '#fbbf24' },
               ].filter(Boolean).map(s => (
                 <div key={s.label}>
-                  <p style={{ fontSize: 11, color: '#475569', marginBottom: 2 }}>{s.label}</p>
+                  <p style={{ fontSize: 12, color: 'var(--text-subtle)', marginBottom: 2 }}>{s.label}</p>
                   <p style={{ fontSize: 13, fontWeight: 700, color: s.color }}>{s.value}</p>
                 </div>
               ))}

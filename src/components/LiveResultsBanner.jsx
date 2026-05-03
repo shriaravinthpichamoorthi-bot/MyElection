@@ -22,11 +22,11 @@ export default function LiveResultsBanner() {
           <span style={{ fontSize: 11, fontWeight: 800, color: '#ef4444', letterSpacing: '0.1em', textTransform: 'uppercase', flexShrink: 0 }}>LIVE 2026</span>
 
           <CalendarClock size={13} style={{ color: '#818cf8', flexShrink: 0 }} />
-          <span style={{ fontSize: 12, color: '#818cf8', fontWeight: 600 }}>
+          <span style={{ fontSize: 13, color: '#818cf8', fontWeight: 600 }}>
             Results will appear here on election day
           </span>
 
-          <Link to="/live" style={{ fontSize: 11, color: '#6366f1', textDecoration: 'none', fontWeight: 600, marginLeft: 4, flexShrink: 0 }}
+          <Link to="/live" style={{ fontSize: 12, color: '#6366f1', textDecoration: 'none', fontWeight: 600, marginLeft: 4, flexShrink: 0 }}
             onMouseEnter={e => e.target.style.color = '#818cf8'}
             onMouseLeave={e => e.target.style.color = '#6366f1'}>
             View nominations →
@@ -34,7 +34,7 @@ export default function LiveResultsBanner() {
 
           <div style={{ marginLeft: 'auto' }}>
             <button onClick={() => setOpen(false)}
-              style={{ width: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'none', border: 'none', cursor: 'pointer', color: '#334155', borderRadius: 4 }}>
+              style={{ width: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-subtle)', borderRadius: 4 }}>
               <X size={12} />
             </button>
           </div>

@@ -48,7 +48,7 @@ export default function Constituencies() {
 
   const { sorted, col:sortCol, dir:sortDir, toggle:sortToggle } = useSortable(filtered, 'constituency_no');
 
-  const selectStyle = { background:'#0f172a', border:'1px solid #1e293b', borderRadius:10, color:'#e2e8f0', fontSize:13, padding:'8px 12px', outline:'none', cursor:'pointer', fontFamily:'inherit' };
+  const selectStyle = { background:'#0f172a', border:'1px solid #1e293b', borderRadius:10, color:'#e2e8f0', fontSize:14, padding:'8px 12px', outline:'none', cursor:'pointer', fontFamily:'inherit' };
 
   return (
     <div style={{ maxWidth:1200, display:'flex', flexDirection:'column', gap:24 }}>
@@ -59,15 +59,15 @@ export default function Constituencies() {
             <div style={{ width:36, height:36, borderRadius:10, background:'rgba(16,185,129,0.15)', border:'1px solid rgba(16,185,129,0.3)', display:'flex', alignItems:'center', justifyContent:'center' }}>
               <Building2 size={18} color="#34d399" />
             </div>
-            <h1 style={{ fontSize:24, fontWeight:800, color:'#f8fafc' }}>Constituencies</h1>
+            <h1 className="h1">Constituencies</h1>
           </div>
-          <p style={{ fontSize:13, color:'#475569', paddingLeft:48 }}>234 assembly segments across 38 districts</p>
+          <p style={{ fontSize:13, color:'var(--text-subtle)', paddingLeft:48 }}>234 assembly segments across 38 districts</p>
         </div>
         <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
           {YEARS.map(y => (
             <motion.button key={y} whileTap={{ scale:0.94 }} onClick={() => setSelYear(y)}
               className={selYear===y ? 'pill-active' : 'pill-idle'}
-              style={{ padding:'7px 14px', borderRadius:10, fontSize:12, fontWeight:600, cursor:'pointer', fontFamily:'inherit' }}>
+              style={{ padding:'7px 14px', borderRadius:10, fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:'inherit' }}>
               {y}{y===2026?' ★':''}
             </motion.button>
           ))}
@@ -77,7 +77,7 @@ export default function Constituencies() {
       {/* Filter bar */}
       <div className="card" style={{ padding:'14px 16px', display:'flex', flexWrap:'wrap', alignItems:'center', gap:10 }}>
         <div style={{ position:'relative' }}>
-          <Search size={13} style={{ position:'absolute', left:10, top:'50%', transform:'translateY(-50%)', color:'#475569' }} />
+          <Search size={13} style={{ position:'absolute', left:10, top:'50%', transform:'translateY(-50%)', color:'var(--text-subtle)' }} />
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search name…"
             className="field" style={{ paddingLeft:30, width:160 }} />
         </div>
@@ -91,8 +91,8 @@ export default function Constituencies() {
         </select>
 
         <div style={{ marginLeft:'auto', display:'flex', alignItems:'center', gap:12 }}>
-          <span style={{ fontSize:12, color:'#475569' }}>
-            <span style={{ color:'#e2e8f0', fontWeight:600 }}>{filtered.length}</span> results
+          <span style={{ fontSize:13, color:'var(--text-subtle)' }}>
+            <span style={{ color:'var(--text-body)', fontWeight:600 }}>{filtered.length}</span> results
           </span>
           <div style={{ display:'flex', borderRadius:10, overflow:'hidden', border:'1px solid #1e293b' }}>
             {[['table', List], ['grid', LayoutGrid]].map(([mode, Icon]) => (
@@ -116,10 +116,10 @@ export default function Constituencies() {
                   <tr className="tbl-head">
                     <SortTh label="#" col="constituency_no" activeCol={sortCol} dir={sortDir} onSort={sortToggle} />
                     <SortTh label="Constituency" col="name" activeCol={sortCol} dir={sortDir} onSort={sortToggle} />
-                    <th style={{ padding:'12px 16px', textAlign:'left', fontSize:11, fontWeight:600, textTransform:'uppercase', letterSpacing:'0.06em', color:'#475569', borderBottom:'1px solid #1e293b', whiteSpace:'nowrap' }}>District</th>
-                    <th style={{ padding:'12px 16px', textAlign:'left', fontSize:11, fontWeight:600, textTransform:'uppercase', letterSpacing:'0.06em', color:'#475569', borderBottom:'1px solid #1e293b' }}>Cat.</th>
-                    <th style={{ padding:'12px 16px', textAlign:'left', fontSize:11, fontWeight:600, textTransform:'uppercase', letterSpacing:'0.06em', color:'#475569', borderBottom:'1px solid #1e293b' }}>Winner</th>
-                    <th style={{ padding:'12px 16px', textAlign:'left', fontSize:11, fontWeight:600, textTransform:'uppercase', letterSpacing:'0.06em', color:'#475569', borderBottom:'1px solid #1e293b' }}>Party</th>
+                    <th style={{ whiteSpace:'nowrap' }}>District</th>
+                    <th>Cat.</th>
+                    <th>Winner</th>
+                    <th>Party</th>
                     <SortTh label="Margin%" col="margin_pct" activeCol={sortCol} dir={sortDir} onSort={sortToggle} />
                     <SortTh label="Turnout%" col="turnout_pct" activeCol={sortCol} dir={sortDir} onSort={sortToggle} />
                   </tr>
@@ -129,7 +129,7 @@ export default function Constituencies() {
                     const mc = marginClass(r.margin_pct);
                     return (
                       <tr key={i} className="tbl-row">
-                        <td style={{ color:'#334155', fontVariantNumeric:'tabular-nums', fontFamily:'monospace' }}>{r.constituency_no}</td>
+                        <td style={{ color:'var(--text-subtle)', fontVariantNumeric:'tabular-nums', fontFamily:'monospace' }}>{r.constituency_no}</td>
                         <td>
                           <Link to={`/constituency/${slugify(r.name)}`}
                             style={{ display:'inline-flex', alignItems:'center', gap:8, color:'#818cf8', textDecoration:'none', fontWeight:500, whiteSpace:'nowrap' }}>
@@ -140,28 +140,28 @@ export default function Constituencies() {
                         <td>
                           {r.district
                             ? <Link to={`/district/${slugify(r.district)}?year=${selYear}`}
-                                style={{ color:'#475569', textDecoration:'none', whiteSpace:'nowrap', fontSize:12 }}
-                                onMouseEnter={e=>e.target.style.color='#94a3b8'} onMouseLeave={e=>e.target.style.color='#475569'}>
+                                style={{ color:'var(--text-subtle)', textDecoration:'none', whiteSpace:'nowrap' }}
+                                onMouseEnter={e=>e.target.style.color='#cbd5e1'} onMouseLeave={e=>e.target.style.color='var(--text-subtle)'}>
                                 {r.district}
                               </Link>
-                            : <span style={{ color:'#334155' }}>—</span>}
+                            : <span style={{ color:'var(--text-subtle)' }}>—</span>}
                         </td>
-                        <td style={{ color:'#475569', fontSize:12 }}>{r.category||'—'}</td>
-                        <td style={{ color:'#94a3b8', whiteSpace:'nowrap', fontSize:12 }}>
-                          {r.winner_name ? formatName(r.winner_name) : <span style={{ color:'#334155', fontStyle:'italic' }}>Pending</span>}
+                        <td style={{ color:'var(--text-subtle)' }}>{r.category||'—'}</td>
+                        <td style={{ color:'var(--text-muted)', whiteSpace:'nowrap' }}>
+                          {r.winner_name ? formatName(r.winner_name) : <span style={{ color:'var(--text-subtle)', fontStyle:'italic' }}>Pending</span>}
                         </td>
-                        <td>{r.winner_party ? <PartyBadge party={r.winner_party} partyColors={partyColors} size="xs" /> : <span style={{ color:'#334155' }}>—</span>}</td>
+                        <td>{r.winner_party ? <PartyBadge party={r.winner_party} partyColors={partyColors} size="xs" /> : <span style={{ color:'var(--text-subtle)' }}>—</span>}</td>
                         <td>
                           {r.margin_pct!=null
-                            ? <span style={{ fontSize:12, fontWeight:600, color: r.margin_pct<3?'#f87171':r.margin_pct<8?'#fbbf24':'#34d399', fontVariantNumeric:'tabular-nums' }}>{r.margin_pct.toFixed(1)}%</span>
-                            : <span style={{ color:'#334155' }}>—</span>}
+                            ? <span style={{ fontWeight:600, color: r.margin_pct<3?'#f87171':r.margin_pct<8?'#fbbf24':'#34d399', fontVariantNumeric:'tabular-nums' }}>{r.margin_pct.toFixed(1)}%</span>
+                            : <span style={{ color:'var(--text-subtle)' }}>—</span>}
                         </td>
-                        <td style={{ color:'#64748b', fontSize:12, fontVariantNumeric:'tabular-nums' }}>{formatPct(r.turnout_pct)}</td>
+                        <td style={{ color:'var(--text-subtle)', fontVariantNumeric:'tabular-nums' }}>{formatPct(r.turnout_pct)}</td>
                       </tr>
                     );
                   })}
                   {sorted.length===0 && (
-                    <tr><td colSpan={8} style={{ padding:'48px 16px', textAlign:'center', color:'#334155', fontSize:13 }}>No results match the current filters</td></tr>
+                    <tr><td colSpan={8} style={{ padding:'48px 16px', textAlign:'center', color:'var(--text-muted)', fontSize:13 }}>No results match the current filters</td></tr>
                   )}
                 </tbody>
               </table>
@@ -182,24 +182,24 @@ export default function Constituencies() {
                       <MapFragmentIcon geometry={geos.get(r.constituency_no)} className="h-5 w-5" fill={color} background="transparent" style={{ flexShrink:0, marginTop:2 }} />
                       <div style={{ minWidth:0 }}>
                         <p style={{ fontSize:13, fontWeight:600, color:'#f8fafc', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{r.name}</p>
-                        <p style={{ fontSize:11, color:'#475569', marginTop:2 }}>{r.district}</p>
+                        <p style={{ fontSize:13, color:'var(--text-subtle)', marginTop:2 }}>{r.district}</p>
                       </div>
                     </div>
-                    <p style={{ fontSize:12, color:'#64748b', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', marginBottom:10 }}>
-                      {r.winner_name ? formatName(r.winner_name) : <span style={{ fontStyle:'italic', color:'#334155' }}>Pending</span>}
+                    <p style={{ fontSize:13, color:'var(--text-subtle)', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', marginBottom:10 }}>
+                      {r.winner_name ? formatName(r.winner_name) : <span style={{ fontStyle:'italic', color:'var(--text-faint)' }}>Pending</span>}
                     </p>
                     <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:8 }}>
                       {r.winner_party ? <PartyBadge party={r.winner_party} partyColors={partyColors} size="xs" /> : <span />}
-                      <div style={{ display:'flex', alignItems:'center', gap:8, fontSize:12 }}>
+                      <div style={{ display:'flex', alignItems:'center', gap:8, fontSize:13 }}>
                         {r.margin_pct!=null && <span style={{ fontWeight:700, color: r.margin_pct<3?'#f87171':r.margin_pct<8?'#fbbf24':'#34d399', fontVariantNumeric:'tabular-nums' }}>{r.margin_pct.toFixed(1)}%</span>}
-                        <span style={{ color:'#475569' }}>{formatPct(r.turnout_pct)}</span>
+                        <span style={{ color:'var(--text-subtle)' }}>{formatPct(r.turnout_pct)}</span>
                       </div>
                     </div>
                   </Link>
                 </motion.div>
               );
             })}
-            {sorted.length===0 && <div style={{ gridColumn:'span 4', padding:'48px 0', textAlign:'center', color:'#334155', fontSize:13 }}>No results match the current filters</div>}
+            {sorted.length===0 && <div style={{ gridColumn:'span 4', padding:'48px 0', textAlign:'center', color:'var(--text-muted)', fontSize:13 }}>No results match the current filters</div>}
           </motion.div>
         )}
       </AnimatePresence>

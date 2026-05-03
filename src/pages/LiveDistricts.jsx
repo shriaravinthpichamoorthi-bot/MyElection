@@ -124,20 +124,20 @@ function DistrictCard({ district, summary, index, basePath }) {
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
               <p title={district} style={{ fontSize: 13, fontWeight: 700, color: '#f8fafc', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{district}</p>
-              <p style={{ fontSize: 10, color: '#475569' }}>{total} constituencies · {totalCandidates} candidates</p>
+              <p style={{ fontSize: 12, color: 'var(--text-subtle)' }}>{total} constituencies · {totalCandidates} candidates</p>
             </div>
-            <ChevronRight size={13} style={{ color: '#334155', flexShrink: 0 }} />
+            <ChevronRight size={13} style={{ color: 'var(--text-subtle)', flexShrink: 0 }} />
           </div>
 
           {/* Top alliance */}
           {topAlliance ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
               <div style={{ width: 7, height: 7, borderRadius: 2, background: accent, flexShrink: 0 }} />
-              <span style={{ fontSize: 11, color: '#94a3b8', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{topAlliance.n}</span>
+              <span style={{ fontSize: 12, color: 'var(--text-muted)', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{topAlliance.n}</span>
               <span style={{ fontSize: 12, fontWeight: 700, color: accent }}>{topAlliance.count} seats</span>
             </div>
           ) : (
-            <p style={{ fontSize: 11, color: '#334155', fontStyle: 'italic' }}>No data</p>
+            <p style={{ fontSize: 12, color: 'var(--text-muted)', fontStyle: 'italic' }}>No data</p>
           )}
 
           {/* Nomination bar */}
@@ -154,12 +154,12 @@ function DistrictCard({ district, summary, index, basePath }) {
           {hasLiveData ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
               <Radio size={11} style={{ color: declaredCount > 0 ? '#34d399' : '#fbbf24' }} />
-              <span style={{ fontSize: 10, color: declaredCount > 0 ? '#34d399' : '#fbbf24', fontWeight: 600 }}>
+              <span style={{ fontSize: 11, color: declaredCount > 0 ? '#34d399' : '#fbbf24', fontWeight: 600 }}>
                 {declaredCount} declared · {countingCount} counting
               </span>
             </div>
           ) : (
-            <p style={{ fontSize: 10, color: '#475569', fontStyle: 'italic' }}>Awaiting results</p>
+            <p style={{ fontSize: 11, color: 'var(--text-subtle)', fontStyle: 'italic' }}>Awaiting results</p>
           )}
         </div>
       </Link>
@@ -204,14 +204,14 @@ export default function LiveDistricts() {
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, marginBottom: 14 }}>
         <div>
-          <h1 style={{ fontSize: 20, fontWeight: 800, color: '#f8fafc' }}>Districts — {isBiharMode ? '2025' : '2026'}</h1>
-          <p style={{ fontSize: 13, color: '#475569', marginTop: 3 }}>{districtList.length} districts · click to see constituency breakdown</p>
+          <h1 className="h1">Districts — {isBiharMode ? '2025' : '2026'}</h1>
+          <p style={{ fontSize: 13, color: 'var(--text-subtle)', marginTop: 3 }}>{districtList.length} districts · click to see constituency breakdown</p>
         </div>
         <div style={{ position: 'relative' }}>
-          <Search size={13} style={{ position: 'absolute', left: 9, top: '50%', transform: 'translateY(-50%)', color: '#475569', pointerEvents: 'none' }} />
+          <Search size={13} style={{ position: 'absolute', left: 9, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-subtle)', pointerEvents: 'none' }} />
           <input value={search} onChange={e => setSearch(e.target.value)}
             placeholder="Filter districts…"
-            className="field" style={{ paddingLeft: 28, height: 34, fontSize: 12, width: '100%', minWidth: 160, maxWidth: 260 }} />
+            className="field" style={{ paddingLeft: 28, height: 34, width: '100%', minWidth: 160, maxWidth: 260 }} />
         </div>
       </div>
 
@@ -219,7 +219,7 @@ export default function LiveDistricts() {
       {(!liveMeta || liveMeta.status === 'awaiting') && (
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', borderRadius: 9, background: 'rgba(99,102,241,0.06)', border: '1px solid rgba(99,102,241,0.18)', marginBottom: 16 }}>
           <CalendarClock size={14} style={{ color: '#818cf8', flexShrink: 0 }} />
-          <p style={{ fontSize: 12, color: '#818cf8', fontWeight: 600 }}>Live results pending · Showing {isBiharMode ? '2025' : '2026'} nomination data</p>
+          <p style={{ fontSize: 13, color: '#818cf8', fontWeight: 600 }}>Live results pending · Showing {isBiharMode ? '2025' : '2026'} nomination data</p>
         </div>
       )}
 
@@ -233,7 +233,7 @@ export default function LiveDistricts() {
           return <DistrictCard key={district} district={district} summary={summary} index={i} basePath={basePath} />;
         })}
         {filtered.length === 0 && (
-          <p style={{ color: '#334155', fontSize: 13, padding: '32px 0' }}>No districts match</p>
+          <p style={{ color: 'var(--text-muted)', fontSize: 13, padding: '32px 0' }}>No districts match</p>
         )}
       </div>
     </div>

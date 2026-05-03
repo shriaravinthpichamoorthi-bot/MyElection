@@ -19,7 +19,7 @@ function ChartCard({ title, sub, children }) {
     <motion.div initial={{ opacity:0, y:16 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true, margin:'-30px' }} transition={{ duration:0.3 }}
       className="card" style={{ padding:20 }}>
       <p style={{ fontSize:13, fontWeight:600, color:'#e2e8f0', marginBottom:2 }}>{title}</p>
-      {sub && <p style={{ fontSize:11, color:'#475569', marginBottom:16 }}>{sub}</p>}
+      {sub && <p style={{ fontSize:11, color:'var(--text-subtle)', marginBottom:16 }}>{sub}</p>}
       {children}
     </motion.div>
   );
@@ -76,7 +76,7 @@ export default function Home() {
           </div>
 
           <div style={{ flexShrink:0 }}>
-            <p style={{ fontSize:10, fontWeight:700, color:'#334155', textTransform:'uppercase', letterSpacing:'0.1em', marginBottom:10 }}>Select Year</p>
+            <p style={{ fontSize:11, fontWeight:700, color:'var(--text-muted)', textTransform:'uppercase', letterSpacing:'0.1em', marginBottom:10 }}>Select Year</p>
             <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
               {YEARS.map(y => (
                 <motion.button key={y} whileTap={{ scale:0.94 }} onClick={() => setSelYear(y)}
@@ -101,7 +101,7 @@ export default function Home() {
             style={{ display:'flex', alignItems:'center', gap:12, padding:'14px 18px' }}>
             {item.icon}
             <div style={{ flex:1, minWidth:0 }}>
-              <p style={{ fontSize:10, fontWeight:700, textTransform:'uppercase', letterSpacing:'0.08em', color:'#475569', marginBottom:3 }}>{item.label}</p>
+              <p style={{ fontSize:11, fontWeight:700, textTransform:'uppercase', letterSpacing:'0.08em', color:'var(--text-subtle)', marginBottom:3 }}>{item.label}</p>
               <p style={{ fontSize:13, fontWeight:600, color:'#e2e8f0', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{item.value}</p>
             </div>
             {item.right}
@@ -113,7 +113,7 @@ export default function Home() {
       <div>
         <div style={{ marginBottom:16 }}>
           <h2 style={{ fontSize:16, fontWeight:700, color:'#f8fafc' }}>{selYear} — State Overview</h2>
-          <p style={{ fontSize:12, color:'#475569', marginTop:2 }}>Key metrics for the {selYear} Tamil Nadu Assembly Election</p>
+          <p style={{ fontSize:13, color:'var(--text-subtle)', marginTop:2 }}>Key metrics for the {selYear} Tamil Nadu Assembly Election</p>
         </div>
         <div style={{ display:'grid', gridTemplateColumns:'repeat(2,1fr)', gap:12 }} id="stat-grid">
           <style>{`@media(min-width:640px){#stat-grid{grid-template-columns:repeat(3,1fr)}}@media(min-width:1024px){#stat-grid{grid-template-columns:repeat(6,1fr)}}`}</style>
@@ -204,14 +204,14 @@ export default function Home() {
           <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', marginBottom:16 }}>
             <div>
               <p style={{ fontSize:13, fontWeight:600, color:'#e2e8f0' }}>Battleground Seats — {selYear}</p>
-              <p style={{ fontSize:11, color:'#475569', marginTop:2 }}>Tightest margins</p>
+              <p style={{ fontSize:11, color:'var(--text-subtle)', marginTop:2 }}>Tightest margins</p>
             </div>
             <Link to="/analytics" style={{ display:'flex', alignItems:'center', gap:4, fontSize:12, color:'#818cf8', textDecoration:'none', fontWeight:500 }}>
               View all <ArrowRight size={12} />
             </Link>
           </div>
           {tgSeats.length === 0
-            ? <div style={{ textAlign:'center', padding:'32px 0', color:'#334155', fontSize:13, fontStyle:'italic' }}>Results pending for {selYear}</div>
+            ? <div style={{ textAlign:'center', padding:'32px 0', color:'var(--text-muted)', fontSize:13, fontStyle:'italic' }}>Results pending for {selYear}</div>
             : <div style={{ display:'flex', flexDirection:'column', gap:4 }}>
                 {tgSeats.map((r,i) => (
                   <Link key={i} to={`/constituency/${slugify(r.name)}`}
@@ -219,7 +219,7 @@ export default function Home() {
                     onMouseEnter={e => { e.currentTarget.style.background='rgba(99,102,241,0.06)'; e.currentTarget.style.borderColor='#1e293b'; }}
                     onMouseLeave={e => { e.currentTarget.style.background='rgba(255,255,255,0)'; e.currentTarget.style.borderColor='transparent'; }}>
                     <div style={{ display:'flex', alignItems:'center', gap:10, minWidth:0 }}>
-                      <span style={{ fontSize:11, color:'#334155', fontVariantNumeric:'tabular-nums', width:18, textAlign:'center' }}>{i+1}</span>
+                      <span style={{ fontSize:11, color:'var(--text-muted)', fontVariantNumeric:'tabular-nums', width:18, textAlign:'center' }}>{i+1}</span>
                       <span style={{ fontSize:13, color:'#cbd5e1', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{r.name}</span>
                     </div>
                     <div style={{ display:'flex', alignItems:'center', gap:8, flexShrink:0 }}>

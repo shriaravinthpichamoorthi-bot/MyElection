@@ -22,7 +22,7 @@ function StatusCard({ label, count, color, icon: Icon, to }) {
       onMouseEnter={e => { e.currentTarget.style.borderColor = `${color}44`; e.currentTarget.style.background = `${color}11`; }}
       onMouseLeave={e => { e.currentTarget.style.borderColor = '#1e293b'; e.currentTarget.style.background = 'rgba(15,23,42,0.6)'; }}>
       <Icon size={18} style={{ color }} />
-      <span style={{ fontSize: 11, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{label}</span>
+      <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-subtle)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{label}</span>
       <span style={{ fontSize: 28, fontWeight: 800, color }}>{count}</span>
     </motion.div>
   );
@@ -32,9 +32,9 @@ function SeatChart({ title, data, filterKey, basePath }) {
   const navigate = useNavigate();
   return (
     <div className="card" style={{ padding: '20px 24px' }}>
-      <h3 style={{ fontSize: 12, fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 16 }}>{title}</h3>
+      <h3 style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-subtle)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 16 }}>{title}</h3>
       {data.length === 0 ? (
-        <p style={{ fontSize: 13, color: '#334155', textAlign: 'center', padding: '40px 0' }}>No data yet</p>
+        <p style={{ fontSize: 13, color: 'var(--text-muted)', textAlign: 'center', padding: '40px 0' }}>No data yet</p>
       ) : (
         <ResponsiveContainer width="100%" height={220}>
           <BarChart data={data} layout="vertical" margin={{ left: 10, right: 20, top: 5, bottom: 5 }}>
@@ -63,9 +63,9 @@ function QuickLink({ to, icon: Icon, label, sub }) {
         </div>
         <div>
           <p style={{ fontSize: 13, fontWeight: 700, color: '#e2e8f0' }}>{label}</p>
-          <p style={{ fontSize: 11, color: '#475569', marginTop: 1 }}>{sub}</p>
+          <p style={{ fontSize: 13, color: 'var(--text-subtle)', marginTop: 1 }}>{sub}</p>
         </div>
-        <span style={{ marginLeft: 'auto', fontSize: 12, color: '#475569' }}>→</span>
+        <span style={{ marginLeft: 'auto', fontSize: 13, color: 'var(--text-subtle)' }}>→</span>
       </motion.div>
     </Link>
   );
@@ -196,8 +196,8 @@ export default function LiveDashboard({
           <span style={{ width: 9, height: 9, borderRadius: '50%', background: '#ef4444', display: 'inline-block', animation: 'pulse 1.6s ease-in-out infinite' }} />
           <span style={{ fontSize: 11, fontWeight: 800, color: '#ef4444', letterSpacing: '0.12em', textTransform: 'uppercase' }}>LIVE 2026</span>
         </div>
-        <h1 style={{ fontSize: 22, fontWeight: 800, color: '#f8fafc' }}>{title}</h1>
-        <p style={{ fontSize: 13, color: '#475569', marginTop: 4 }}>
+        <h1 className="h1">{title}</h1>
+        <p style={{ fontSize: 13, color: 'var(--text-subtle)', marginTop: 4 }}>
           {totalConstituencies} constituencies · {totalCandidates.toLocaleString('en-IN')} candidates nominated
           {hasLiveData && <span> · Updated {timeAgo}</span>}
         </p>
@@ -214,7 +214,7 @@ export default function LiveDashboard({
             <p style={{ fontSize: 15, fontWeight: 800, color: '#34d399', marginBottom: 3 }}>
               Counting in Progress · {declared} of {totalConstituencies} Declared
             </p>
-            <p style={{ fontSize: 12, color: '#64748b' }}>
+            <p style={{ fontSize: 13, color: 'var(--text-subtle)' }}>
               {counting} still counting · {awaiting} awaiting · Last update: {timeAgo}
             </p>
           </div>
@@ -230,7 +230,7 @@ export default function LiveDashboard({
           </div>
           <div>
             <p style={{ fontSize: 15, fontWeight: 800, color: '#a5b4fc', marginBottom: 3 }}>Live results pending</p>
-            <p style={{ fontSize: 12, color: '#64748b' }}>
+            <p style={{ fontSize: 13, color: 'var(--text-subtle)' }}>
               Nominations are confirmed for all {totalConstituencies} constituencies. Live vote counts and declared results will update automatically once counting begins.
             </p>
           </div>
@@ -254,7 +254,7 @@ export default function LiveDashboard({
           <SeatChart title="Alliance Seats" data={allianceChartData} filterKey="alliance" basePath={basePath} />
           {/* Live Results moved here (was left panel) */}
           <div className="card" style={{ padding: '20px 24px' }}>
-            <h2 style={{ fontSize: 12, fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 16 }}>
+            <h2 style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-subtle)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 16 }}>
               {declaredTitle || `Live Results — ${declared} Declared`}
             </h2>
             {/* Stacked bar */}
@@ -284,7 +284,7 @@ export default function LiveDashboard({
                       <div style={{ width: 10, height: 10, borderRadius: 2, background: allianceColors[a] ?? '#607d8b', flexShrink: 0 }} />
                       <span style={{ flex: 1, fontSize: 13, fontWeight: 600, color: '#cbd5e1' }}>{a}</span>
                       <span style={{ fontSize: 15, fontWeight: 800, color: allianceColors[a] ?? '#607d8b' }}>{allianceTally[a] ?? 0}</span>
-                      <span style={{ fontSize: 10, color: '#475569' }}>seats →</span>
+                      <span style={{ fontSize: 11, color: 'var(--text-subtle)' }}>seats →</span>
                     </div>
                     <div style={{ marginLeft: 20, height: 3, borderRadius: 99, background: '#1e293b', overflow: 'hidden' }}>
                       <div style={{ height: '100%', width: `${totalConstituencies ? ((allianceTally[a] ?? 0) / totalConstituencies) * 100 : 0}%`, background: `${allianceColors[a] ?? '#607d8b'}88`, borderRadius: 99 }} />
@@ -293,7 +293,7 @@ export default function LiveDashboard({
                 </Link>
               ))}
             </div>
-            <p style={{ fontSize: 11, color: '#334155', marginTop: 10 }}>
+            <p style={{ fontSize: 12, color: 'var(--text-subtle)', marginTop: 10 }}>
               Click any alliance to view their leading constituencies →
             </p>
           </div>
@@ -307,7 +307,7 @@ export default function LiveDashboard({
         {/* Left: Party Breakdown (moved from above) OR Nominations */}
         {hasLiveData && Object.keys(partyBreakdown).length > 0 ? (
           <div className="card" style={{ padding: '20px 24px' }}>
-            <h3 style={{ fontSize: 12, fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 16 }}>
+            <h3 style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-subtle)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 16 }}>
               Party Breakdown
             </h3>
             <div style={{ display: 'grid', gap: 20, gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))' }}>
@@ -315,8 +315,8 @@ export default function LiveDashboard({
                 <div key={alliance}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
                     <div style={{ width: 10, height: 10, borderRadius: 2, background: allianceColors[alliance] ?? '#607d8b' }} />
-                    <span style={{ fontSize: 12, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{alliance}</span>
-                    <span style={{ fontSize: 11, color: '#475569', marginLeft: 'auto' }}>{allianceTally[alliance] ?? 0} seats</span>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{alliance}</span>
+                    <span style={{ fontSize: 12, color: 'var(--text-subtle)', marginLeft: 'auto' }}>{allianceTally[alliance] ?? 0} seats</span>
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                     {partyBreakdown[alliance].map(({ party, seats, color }) => (
@@ -326,7 +326,7 @@ export default function LiveDashboard({
                         onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                           <div style={{ width: 6, height: 6, borderRadius: '50%', background: color }} />
-                          <span style={{ fontSize: 12, color: '#cbd5e1' }}>{party}</span>
+                          <span style={{ fontSize: 13, color: 'var(--text-muted)' }}>{party}</span>
                         </div>
                         <span style={{ fontSize: 12, fontWeight: 700, color, fontVariantNumeric: 'tabular-nums' }}>{seats}</span>
                       </Link>
@@ -338,7 +338,7 @@ export default function LiveDashboard({
           </div>
         ) : (
           <div className="card" style={{ padding: '20px 24px' }}>
-            <h2 style={{ fontSize: 12, fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 16 }}>
+            <h2 style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-subtle)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 16 }}>
               Alliance Nominations — {totalConstituencies} Constituencies
             </h2>
             <div style={{ display: 'flex', height: 24, borderRadius: 8, overflow: 'hidden', gap: 1, marginBottom: 16 }}>
@@ -367,7 +367,7 @@ export default function LiveDashboard({
                       <div style={{ width: 10, height: 10, borderRadius: 2, background: allianceColors[a] ?? '#607d8b', flexShrink: 0 }} />
                       <span style={{ flex: 1, fontSize: 13, fontWeight: 600, color: '#cbd5e1' }}>{a}</span>
                       <span style={{ fontSize: 15, fontWeight: 800, color: allianceColors[a] ?? '#607d8b' }}>{constituencyNominations[a] ?? 0}</span>
-                      <span style={{ fontSize: 10, color: '#475569' }}>seats →</span>
+                      <span style={{ fontSize: 11, color: 'var(--text-subtle)' }}>seats →</span>
                     </div>
                     <div style={{ marginLeft: 20, height: 3, borderRadius: 99, background: '#1e293b', overflow: 'hidden' }}>
                       <div style={{ height: '100%', width: `${totalConstituencies ? ((constituencyNominations[a] ?? 0) / totalConstituencies) * 100 : 0}%`, background: `${allianceColors[a] ?? '#607d8b'}88`, borderRadius: 99 }} />
@@ -376,7 +376,7 @@ export default function LiveDashboard({
                 </Link>
               ))}
             </div>
-            <p style={{ fontSize: 11, color: '#334155', marginTop: 10 }}>
+            <p style={{ fontSize: 12, color: 'var(--text-subtle)', marginTop: 10 }}>
               Click any alliance to view their constituencies →
             </p>
           </div>
@@ -385,7 +385,7 @@ export default function LiveDashboard({
         {/* Right column: Quick links only (Election Status removed) */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           <div className="card" style={{ padding: '20px 24px' }}>
-            <h2 style={{ fontSize: 12, fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 14 }}>
+            <h2 style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-subtle)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 14 }}>
               <Users size={12} style={{ display: 'inline', marginRight: 6 }} />
               Candidate Nominations
             </h2>
@@ -398,12 +398,12 @@ export default function LiveDashboard({
                     onMouseEnter={e => e.currentTarget.style.opacity = '0.75'}
                     onMouseLeave={e => e.currentTarget.style.opacity = '1'}>
                     <div style={{ width: 8, height: 8, borderRadius: 2, background: color, flexShrink: 0 }} />
-                    <span style={{ fontSize: 12, color: '#94a3b8', flex: 1 }}>{partyFull}</span>
+                    <span style={{ fontSize: 13, color: 'var(--text-subtle)', flex: 1 }}>{partyFull}</span>
                     <span style={{ fontSize: 13, fontWeight: 700, color, fontVariantNumeric: 'tabular-nums' }}>{count}</span>
                   </Link>
                 );
               })}
-              <div style={{ marginTop: 10, paddingTop: 10, borderTop: '1px solid #1e293b', display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#475569' }}>
+              <div style={{ marginTop: 10, paddingTop: 10, borderTop: '1px solid #1e293b', display: 'flex', justifyContent: 'space-between', fontSize: 12, color: 'var(--text-subtle)' }}>
                 <span>{totalConstituencies} constituencies</span>
                 <span>{totalCandidates.toLocaleString('en-IN')} total candidates</span>
               </div>

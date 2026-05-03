@@ -83,14 +83,14 @@ function MapLegend({ allianceCounts }) {
         return (
           <div key={a} style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
             <div style={{ width: 10, height: 10, borderRadius: 2, background: color }} />
-            <span style={{ fontSize: 11, color: '#94a3b8', fontWeight: 600 }}>{a}</span>
-            <span style={{ fontSize: 11, color, fontWeight: 800 }}>{allianceCounts[a]}</span>
+            <span style={{ fontSize: 12, color: 'var(--text-subtle)', fontWeight: 600 }}>{a}</span>
+            <span style={{ fontSize: 12, color, fontWeight: 800 }}>{allianceCounts[a]}</span>
           </div>
         );
       })}
       <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
         <div style={{ width: 10, height: 10, borderRadius: 2, background: '#1e293b', border: '1px solid #334155' }} />
-        <span style={{ fontSize: 11, color: '#475569' }}>Unknown</span>
+        <span style={{ fontSize: 11, color: 'var(--text-subtle)' }}>Unknown</span>
       </div>
     </div>
   );
@@ -192,8 +192,8 @@ export default function LiveMapView() {
 
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
-          <h1 style={{ fontSize: 18, fontWeight: 800, color: '#f8fafc' }}>Live Map — 2026</h1>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: '#475569' }}>
+          <h1 className="h2">Live Map — 2026</h1>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: 'var(--text-subtle)' }}>
             <RefreshCw size={11} />
             {secsAgo(lastUpdated?.getTime())}
           </div>
@@ -203,7 +203,7 @@ export default function LiveMapView() {
         {!hasLiveData && (
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '11px 16px', borderRadius: 10, background: 'rgba(99,102,241,0.06)', border: '1px solid rgba(99,102,241,0.18)' }}>
             <CalendarClock size={15} style={{ color: '#818cf8', flexShrink: 0 }} />
-            <p style={{ fontSize: 12, color: '#818cf8', fontWeight: 600 }}>
+            <p style={{ fontSize: 13, color: '#818cf8', fontWeight: 600 }}>
               Results will appear here on election day · Map shows 2026 nomination alliances
             </p>
           </div>
@@ -245,7 +245,7 @@ export default function LiveMapView() {
                 })}
               </g>
             </svg>
-            <p style={{ fontSize: 10, color: '#334155', marginTop: 10, display: 'flex', alignItems: 'center', gap: 4 }}>
+            <p style={{ fontSize: 11, color: 'var(--text-subtle)', marginTop: 10, display: 'flex', alignItems: 'center', gap: 4 }}>
               <Info size={10} /> {hasLiveData ? 'Coloured by leading alliance · Click any constituency for details' : 'Coloured by nominated alliance · Click any constituency for details'}
             </p>
           </div>
@@ -271,7 +271,7 @@ export default function LiveMapView() {
                       {activeShape.alliance}
                     </span>
                     {activeShape.party && (
-                      <span style={{ fontSize: 10, color: '#64748b' }}>· {activeShape.party}</span>
+                      <span style={{ fontSize: 11, color: 'var(--text-subtle)' }}>· {activeShape.party}</span>
                     )}
                   </div>
                 )}
@@ -284,34 +284,34 @@ export default function LiveMapView() {
                         {activeLive.status}
                       </span>
                       {activeLive.margin > 0 && (
-                        <span style={{ fontSize: 10, color: '#64748b' }}>· Margin: +{activeLive.margin.toLocaleString('en-IN')}</span>
+                        <span style={{ fontSize: 11, color: 'var(--text-subtle)' }}>· Margin: +{activeLive.margin.toLocaleString('en-IN')}</span>
                       )}
                     </div>
                     {activeLive.leading_candidate && (
-                      <p style={{ fontSize: 11, color: '#94a3b8' }}>
+                      <p style={{ fontSize: 12, color: 'var(--text-subtle)' }}>
                         Leading: {activeLive.leading_candidate} ({activeLive.leading_party})
                       </p>
                     )}
                     {activeLive.round && (
-                      <p style={{ fontSize: 10, color: '#475569', marginTop: 2 }}>Round {activeLive.round}</p>
+                      <p style={{ fontSize: 11, color: 'var(--text-subtle)', marginTop: 2 }}>Round {activeLive.round}</p>
                     )}
                   </div>
                 )}
 
-                <p style={{ fontSize: 11, color: '#64748b', marginBottom: 14 }}>
+                <p style={{ fontSize: 12, color: 'var(--text-subtle)', marginBottom: 14 }}>
                   {activeShape.candidateCount} candidates nominated
                 </p>
 
                 {!hasLiveData && (
                   <div style={{ padding: '12px 14px', borderRadius: 8, background: 'rgba(99,102,241,0.06)', border: '1px solid rgba(99,102,241,0.15)', marginBottom: 14, textAlign: 'center' }}>
                     <CalendarClock size={16} style={{ color: '#818cf8', margin: '0 auto 6px' }} />
-                    <p style={{ fontSize: 11, color: '#818cf8', fontWeight: 600 }}>Results on election day</p>
+                    <p style={{ fontSize: 12, color: '#818cf8', fontWeight: 600 }}>Results on election day</p>
                   </div>
                 )}
 
                 <Link to={`${basePath}/${slugify(activeShape.name)}`} style={{ textDecoration: 'none', display: 'block' }}>
                   <div
-                    style={{ padding: '8px 14px', borderRadius: 8, background: 'rgba(99,102,241,0.12)', border: '1px solid rgba(99,102,241,0.3)', textAlign: 'center', fontSize: 12, fontWeight: 600, color: '#818cf8', cursor: 'pointer' }}
+                    style={{ padding: '8px 14px', borderRadius: 8, background: 'rgba(99,102,241,0.12)', border: '1px solid rgba(99,102,241,0.3)', textAlign: 'center', fontSize: 13, fontWeight: 600, color: '#818cf8', cursor: 'pointer' }}
                     onMouseEnter={e => e.currentTarget.style.background = 'rgba(99,102,241,0.2)'}
                     onMouseLeave={e => e.currentTarget.style.background = 'rgba(99,102,241,0.12)'}
                   >
@@ -321,14 +321,14 @@ export default function LiveMapView() {
               </motion.div>
             ) : (
               <div className="card" style={{ padding: '24px 20px', textAlign: 'center' }}>
-                <Info size={24} style={{ color: '#334155', margin: '0 auto 10px' }} />
-                <p style={{ fontSize: 12, color: '#475569' }}>Click any constituency on the map to see details</p>
+                <Info size={24} style={{ color: 'var(--text-subtle)', margin: '0 auto 10px' }} />
+                <p style={{ fontSize: 13, color: 'var(--text-subtle)' }}>Click any constituency on the map to see details</p>
               </div>
             )}
 
             {/* Alliance nomination counts */}
             <div className="card" style={{ padding: '16px 20px', marginTop: 12 }}>
-              <p style={{ fontSize: 11, fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 12 }}>{hasLiveData ? 'Live Results' : 'Nominations'}</p>
+              <p style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-subtle)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 12 }}>{hasLiveData ? 'Live Results' : 'Nominations'}</p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                 {ALLIANCES_ORDER.filter(a => allianceCounts[a]).map(a => {
                   const color = ALLIANCE_COLORS[a] ?? '#607d8b';
@@ -338,7 +338,7 @@ export default function LiveMapView() {
                     <div key={a}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 3 }}>
                         <div style={{ width: 8, height: 8, borderRadius: 2, background: color, flexShrink: 0 }} />
-                        <span style={{ fontSize: 11, color: '#94a3b8', flex: 1 }}>{a}</span>
+                        <span style={{ fontSize: 12, color: 'var(--text-subtle)', flex: 1 }}>{a}</span>
                         <span style={{ fontSize: 12, fontWeight: 800, color }}>{count}</span>
                       </div>
                       <div style={{ height: 3, borderRadius: 99, background: '#1e293b', overflow: 'hidden', marginLeft: 16 }}>
@@ -348,7 +348,7 @@ export default function LiveMapView() {
                   );
                 })}
               </div>
-              <p style={{ fontSize: 10, color: '#334155', marginTop: 10, borderTop: '1px solid #1e293b', paddingTop: 8 }}>
+              <p style={{ fontSize: 11, color: 'var(--text-subtle)', marginTop: 10, borderTop: '1px solid #1e293b', paddingTop: 8 }}>
                 {shapes.length} total constituencies
               </p>
             </div>

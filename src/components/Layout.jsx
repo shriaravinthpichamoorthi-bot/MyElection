@@ -40,7 +40,7 @@ function SidebarContent({ onNav, collapsed, onToggle }) {
           {!collapsed && (
             <div style={{ overflow: 'hidden' }}>
               <div style={{ fontWeight: 700, fontSize: 13, color: '#f8fafc', lineHeight: 1.2, whiteSpace: 'nowrap' }}>TN Election</div>
-              <div style={{ fontWeight: 600, fontSize: 9, color: '#6366f1', letterSpacing: '0.12em', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Intelligence Portal</div>
+              <div style={{ fontWeight: 600, fontSize: 11, color: '#6366f1', letterSpacing: '0.12em', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Intelligence Portal</div>
             </div>
           )}
         </Link>
@@ -51,7 +51,7 @@ function SidebarContent({ onNav, collapsed, onToggle }) {
         {NAV.map(({ group, items }) => (
           <div key={group}>
             {!collapsed && (
-              <div style={{ fontSize: 10, fontWeight: 700, color: '#334155', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '0 10px 6px' }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-subtle)', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '0 10px 6px' }}>
                 {group}
               </div>
             )}
@@ -65,12 +65,12 @@ function SidebarContent({ onNav, collapsed, onToggle }) {
                     className={active ? 'nav-active' : 'nav-idle'}
                     title={collapsed ? label : undefined}
                     style={{ display: 'flex', alignItems: 'center', gap: collapsed ? 0 : 10, padding: collapsed ? '9px 0' : '9px 10px', borderRadius: 10, textDecoration: 'none', fontSize: 13, fontWeight: 500, justifyContent: collapsed ? 'center' : 'flex-start' }}>
-                    <Icon size={15} style={{ color: active ? (live ? '#f87171' : '#818cf8') : '#475569', flexShrink: 0 }} />
+                    <Icon size={15} style={{ color: active ? (live ? '#f87171' : '#818cf8') : 'var(--text-subtle)', flexShrink: 0 }} />
                     {!collapsed && (
                       <>
                         <span style={{ flex: 1 }}>{label}</span>
                         {badge && (
-                          <span style={{ fontSize: 9, fontWeight: 700, padding: '2px 6px', borderRadius: 999, background: live ? 'rgba(239,68,68,0.2)' : 'rgba(99,102,241,0.2)', color: live ? '#fca5a5' : '#a5b4fc', border: `1px solid ${live ? 'rgba(239,68,68,0.35)' : 'rgba(99,102,241,0.3)'}`, letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: 4 }}>
+                          <span style={{ fontSize: 11, fontWeight: 700, padding: '2px 6px', borderRadius: 999, background: live ? 'rgba(239,68,68,0.2)' : 'rgba(99,102,241,0.2)', color: live ? '#fca5a5' : '#a5b4fc', border: `1px solid ${live ? 'rgba(239,68,68,0.35)' : 'rgba(99,102,241,0.3)'}`, letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: 4 }}>
                             {live && <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#ef4444', display: 'inline-block', animation: 'pulse 1.6s ease-in-out infinite' }} />}
                             {badge}
                           </span>
@@ -89,16 +89,16 @@ function SidebarContent({ onNav, collapsed, onToggle }) {
       {/* Footer + collapse toggle */}
       <div style={{ padding: collapsed ? '16px 8px 0' : '16px 20px 0', borderTop: '1px solid #1e293b', marginTop: 16 }}>
         {!collapsed && (
-          <p style={{ fontSize: 11, color: '#334155', lineHeight: 1.6, marginBottom: 10 }}>
+          <p style={{ fontSize: 12, color: 'var(--text-subtle)', lineHeight: 1.6, marginBottom: 10 }}>
             234 constituencies · 38 districts<br />2001–2026
           </p>
         )}
         {onToggle && (
           <button onClick={onToggle}
             title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', padding: '8px 0', borderRadius: 9, border: '1px solid #1e293b', background: 'transparent', cursor: 'pointer', color: '#334155', transition: 'all 0.15s' }}
-            onMouseEnter={e => { e.currentTarget.style.background = '#141e33'; e.currentTarget.style.color = '#64748b'; }}
-            onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#334155'; }}>
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', padding: '8px 0', borderRadius: 9, border: '1px solid #1e293b', background: 'transparent', cursor: 'pointer', color: 'var(--text-subtle)', transition: 'all 0.15s' }}
+            onMouseEnter={e => { e.currentTarget.style.background = '#141e33'; e.currentTarget.style.color = '#cbd5e1'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text-subtle)'; }}>
             {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
           </button>
         )}
@@ -206,7 +206,7 @@ export default function Layout({ children }) {
 
           {/* Search */}
           <div ref={searchRef} style={{ flex: 1, maxWidth: 480, position: 'relative' }}>
-            <Search size={15} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#475569', pointerEvents: 'none' }} />
+            <Search size={15} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-subtle)', pointerEvents: 'none' }} />
             <input value={query} onChange={e => setQuery(e.target.value)}
               placeholder="Search constituency, district, candidate…"
               className="field" style={{ width: '100%', paddingLeft: 36 }} />
@@ -220,10 +220,10 @@ export default function Layout({ children }) {
                       style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', background: 'none', border: 'none', borderBottom: '1px solid #1e293b', cursor: 'pointer', textAlign: 'left' }}
                       onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
                       onMouseLeave={e => e.currentTarget.style.background = 'none'}>
-                      <span style={{ fontSize: 9, fontWeight: 700, padding: '2px 6px', borderRadius: 999, background: typeBg[r.type], color: typeColor[r.type], textTransform: 'uppercase', letterSpacing: '0.08em', flexShrink: 0 }}>
+                      <span style={{ fontSize: 11, fontWeight: 700, padding: '2px 6px', borderRadius: 999, background: typeBg[r.type], color: typeColor[r.type], textTransform: 'uppercase', letterSpacing: '0.08em', flexShrink: 0 }}>
                         {r.type}
                       </span>
-                      <span style={{ fontSize: 13, color: '#e2e8f0' }}>{r.label}</span>
+                      <span style={{ fontSize: 13, color: 'var(--text-body)' }}>{r.label}</span>
                     </button>
                   ))}
                 </motion.div>
@@ -252,8 +252,8 @@ export default function Layout({ children }) {
         </main>
 
         <footer style={{ padding: '20px 32px', borderTop: '1px solid #1e293b', textAlign: 'center' }}>
-          <p style={{ fontSize: 11, color: '#334155' }}>
-            {pathname.startsWith('/bihar') ? 'Bihar' : 'Tamil Nadu'} Election Intelligence Portal · 2001–2026 · {pathname.startsWith('/bihar') ? '243' : '234'} constituencies · {pathname.startsWith('/bihar') ? '38' : '38'} districts
+          <p style={{ fontSize: 12, color: 'var(--text-subtle)' }}>
+            {pathname.startsWith('/bihar') ? 'Bihar' : 'Tamil Nadu'} Election Intelligence Portal · 2001–2026 · {pathname.startsWith('/bihar') ? '243' : '234'} constituencies · 38 districts
           </p>
         </footer>
       </div>
