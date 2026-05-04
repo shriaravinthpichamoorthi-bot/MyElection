@@ -143,9 +143,21 @@ export default function LiveMapView() {
     return m;
   }, [data]);
 
+  // Build a normalised-name → live entry map so we can match by name
+  const liveDataByName = useMemo(() => {
+    if (!liveData) return {};
+    const norm = s => s?.toLowerCase().replace(/[^a-z]/g, '') ?? '';
+    const m = {};
+    Object.values(liveData).forEach(c => {
+      if (c.name) m[norm(c.name)] = c;
+    });
+    return m;
+  }, [liveData]);
+
   // Project constituency shapes with alliance metadata
   const shapes = useMemo(() => {
     if (!geoJson || !allResults) return [];
+    const norm = s => s?.toLowerCase().replace(/[^a-z]/g, '') ?? '';
     return projectFeatures(geoJson.features, f => {
       const acNo = f.properties.AC_NO;
       const acName = f.properties.AC_NAME ?? '';
@@ -154,8 +166,8 @@ export default function LiveMapView() {
       if (!canonicalName) canonicalName = nameLookup[acName.toLowerCase()] ?? acName;
       const resultData = allResults[canonicalName];
 
-      // Use AC_NO to look up live data directly — avoids fragile name matching
-      const live = liveData?.[String(acNo)];
+      // Match live data by name (normalised) — avoids ID vs AC_NO mismatch
+      const live = liveDataByName[norm(canonicalName)] ?? liveDataByName[norm(acName)] ?? null;
       const hasLead = live && !!live.leading_party;
 
       // Colour when a leading party is known; leave blank otherwise
@@ -174,7 +186,7 @@ export default function LiveMapView() {
         live,
       };
     });
-  }, [geoJson, allResults, liveData, acNoToName, nameLookup]);
+  }, [geoJson, allResults, liveDataByName, acNoToName, nameLookup]);
 
   // Alliance counts for legend
   const allianceCounts = useMemo(() => {
