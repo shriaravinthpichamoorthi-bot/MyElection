@@ -75,7 +75,7 @@ function projectFeatures(features, getMeta) {
 
 const ALLIANCES_ORDER = ['DMK Alliance', 'AIADMK', 'NTK', 'TVK', 'NDA', 'AMMK', 'Others'];
 
-function MapLegend({ allianceCounts }) {
+function MapLegend({ allianceCounts, allianceColors }) {
   return (
     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, alignItems: 'center' }}>
       {ALLIANCES_ORDER.filter(a => allianceCounts[a]).map(a => {
@@ -216,7 +216,7 @@ export default function LiveMapView() {
 
         {/* Legend */}
         <div className="card" style={{ padding: '12px 16px' }}>
-          <MapLegend allianceCounts={allianceCounts} />
+          <MapLegend allianceCounts={allianceCounts} allianceColors={allianceColors} />
         </div>
 
         {/* Main: map + detail */}
