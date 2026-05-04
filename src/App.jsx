@@ -21,11 +21,10 @@ import LiveDistrictDetail from './pages/LiveDistrictDetail';
 import LiveConstituency from './pages/LiveConstituency';
 import LiveMapView from './pages/LiveMapView';
 
-const BIHAR_API_URL = import.meta.env.VITE_BIHAR_API_URL || import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
-if (import.meta.env.PROD && !BIHAR_API_URL) {
-  throw new Error('VITE_API_URL must be set in production');
-}
+const TN_API_URL = import.meta.env.VITE_TN_API_URL || '';
+const tnApiClient = TN_API_URL ? createApiClient(TN_API_URL) : null;
 
+const BIHAR_API_URL = import.meta.env.VITE_BIHAR_API_URL || import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
 const biharApiClient = createApiClient(BIHAR_API_URL);
 
 const biharConfig = {
@@ -44,7 +43,7 @@ const biharConfig = {
 export default function App() {
   return (
     <DataProvider>
-      <LiveResultsProvider>
+      <LiveResultsProvider config={tnApiClient ? { apiClient: tnApiClient } : {}}>
         <BrowserRouter>
           <Layout>
             <Routes>

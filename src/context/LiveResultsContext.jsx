@@ -148,26 +148,19 @@ export function LiveResultsProvider({ children, config = {} }) {
         setDistrictMap(null);
       }
 
-      // Try to fetch live results from API
+      // Try to fetch live results from API (only when an explicit apiClient is configured)
       let liveConstituencies = null;
       let meta = null;
-      try {
-        if (apiClient) {
+      if (apiClient) {
+        try {
           const summary = await apiClient.getSummary();
           const constituencies = await apiClient.getConstituencies();
           meta = { ...summary.meta, party_tally: summary.party_tally || {}, alliance_tally: summary.alliance_tally || {} };
           liveConstituencies = constituencies.constituencies;
-        } else {
-          const [summary, constituencies] = await Promise.all([
-            getSummary(),
-            getConstituencies(),
-          ]);
-          meta = { ...summary.meta, party_tally: summary.party_tally || {}, alliance_tally: summary.alliance_tally || {} };
-          liveConstituencies = constituencies.constituencies;
+          setApiError(null);
+        } catch (e) {
+          setApiError(e.message);
         }
-        setApiError(null);
-      } catch (e) {
-        setApiError(e.message);
       }
 
       // Merge live data into results
@@ -232,14 +225,10 @@ export function LiveResultsProvider({ children, config = {} }) {
     }
   }, [candidateJson, apiClient]);
 
-  // Fetch backend config once on mount
+  // Fetch backend config once on mount (only when an explicit apiClient is configured)
   useEffect(() => {
     if (apiClient) {
       apiClient.getConfig()
-        .then(cfg => setBackendConfig(cfg))
-        .catch(() => setBackendConfig(null));
-    } else {
-      getConfig()
         .then(cfg => setBackendConfig(cfg))
         .catch(() => setBackendConfig(null));
     }
