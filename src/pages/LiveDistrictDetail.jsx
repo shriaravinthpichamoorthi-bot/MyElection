@@ -178,7 +178,11 @@ export default function LiveDistrictDetail() {
   const [detailData, setDetailData] = useState({});
   const [detailLoading, setDetailLoading] = useState(false);
 
-  const hasLiveData = liveMeta && liveMeta.status !== 'awaiting';
+  const hasLiveData = liveMeta && (
+    liveMeta.status !== 'awaiting' ||
+    Object.keys(liveMeta.alliance_tally ?? {}).length > 0 ||
+    Object.keys(liveMeta.party_tally ?? {}).length > 0
+  );
   const isBiharMode = districtMap && Object.keys(districtMap).length > 0;
 
   // Resolve district and its constituencies

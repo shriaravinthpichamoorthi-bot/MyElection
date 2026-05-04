@@ -76,7 +76,11 @@ export default function LiveConstituencies() {
   const statusFilter = sp.get('status') ?? 'all';
   const partyFilter = sp.get('party') ?? 'all';
 
-  const hasLiveData = liveMeta && liveMeta.status !== 'awaiting';
+  const hasLiveData = liveMeta && (
+    liveMeta.status !== 'awaiting' ||
+    Object.keys(liveMeta.alliance_tally ?? {}).length > 0 ||
+    Object.keys(liveMeta.party_tally ?? {}).length > 0
+  );
 
   const nameToDistrict = useMemo(() => {
     // Prefer districtMap from live context (Bihar) over static data (TN)

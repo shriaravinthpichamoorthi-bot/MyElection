@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { RefreshCw, CalendarClock, Info, Radio } from 'lucide-react';
-import { useLiveResults, ALLIANCE_COLORS } from '../context/LiveResultsContext';
+import { useLiveResults } from '../context/LiveResultsContext';
 import { useLiveBasePath } from '../hooks/useLiveBasePath';
 import { useData } from '../context/DataContext';
 import { slugify } from '../utils/helpers';
@@ -79,7 +79,7 @@ function MapLegend({ allianceCounts }) {
   return (
     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, alignItems: 'center' }}>
       {ALLIANCES_ORDER.filter(a => allianceCounts[a]).map(a => {
-        const color = ALLIANCE_COLORS[a] ?? '#607d8b';
+        const color = allianceColors[a] ?? '#607d8b';
         return (
           <div key={a} style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
             <div style={{ width: 10, height: 10, borderRadius: 2, background: color }} />
@@ -97,7 +97,7 @@ function MapLegend({ allianceCounts }) {
 }
 
 export default function LiveMapView() {
-  const { loading: liveLoading, allResults, lastUpdated, liveMeta, mapTickMs } = useLiveResults();
+  const { loading: liveLoading, allResults, lastUpdated, liveMeta, mapTickMs, allianceColors } = useLiveResults();
   const { data, loading: dataLoading } = useData();
   const basePath = useLiveBasePath();
   const [geoJson, setGeoJson] = useState(null);
@@ -106,7 +106,11 @@ export default function LiveMapView() {
   const [hovered, setHovered] = useState(null);
   const [, tick] = useState(0);
 
-  const hasLiveData = liveMeta && liveMeta.status !== 'awaiting';
+  const hasLiveData = liveMeta && (
+    liveMeta.status !== 'awaiting' ||
+    Object.keys(liveMeta.alliance_tally ?? {}).length > 0 ||
+    Object.keys(liveMeta.party_tally ?? {}).length > 0
+  );
 
   useEffect(() => {
     fetch('/tamil-nadu-assembly-constituencies.geojson')
@@ -227,7 +231,7 @@ export default function LiveMapView() {
               <rect width={VIEWBOX_WIDTH} height={VIEWBOX_HEIGHT} rx="16" fill="#020617" />
               <g>
                 {shapes.map(s => {
-                  const fill = s.alliance ? (`${ALLIANCE_COLORS[s.alliance] ?? '#607d8b'}cc`) : '#1a2540';
+                  const fill = s.alliance ? (`${allianceColors[s.alliance] ?? '#607d8b'}cc`) : '#1a2540';
                   const isActive = s.name === (selected ?? hovered);
                   const stroke = isActive ? '#f8fafc' : '#0a0f1e';
                   return (
@@ -261,14 +265,14 @@ export default function LiveMapView() {
                 className="card"
                 style={{
                   padding: '18px 20px',
-                  borderLeft: `3px solid ${activeShape.alliance ? (ALLIANCE_COLORS[activeShape.alliance] ?? '#607d8b') : '#334155'}`,
+                  borderLeft: `3px solid ${activeShape.alliance ? (allianceColors[activeShape.alliance] ?? '#607d8b') : '#334155'}`,
                 }}>
                 <h3 style={{ fontSize: 14, fontWeight: 800, color: '#f8fafc', marginBottom: 6 }}>{activeShape.name}</h3>
 
                 {activeShape.alliance && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 12 }}>
-                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: ALLIANCE_COLORS[activeShape.alliance] ?? '#607d8b' }} />
-                    <span style={{ fontSize: 11, fontWeight: 700, color: ALLIANCE_COLORS[activeShape.alliance] ?? '#607d8b' }}>
+                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: allianceColors[activeShape.alliance] ?? '#607d8b' }} />
+                    <span style={{ fontSize: 11, fontWeight: 700, color: allianceColors[activeShape.alliance] ?? '#607d8b' }}>
                       {activeShape.alliance}
                     </span>
                     {activeShape.party && (
@@ -332,7 +336,7 @@ export default function LiveMapView() {
               <p style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-subtle)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 12 }}>{hasLiveData ? 'Live Results' : 'Nominations'}</p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                 {ALLIANCES_ORDER.filter(a => allianceCounts[a]).map(a => {
-                  const color = ALLIANCE_COLORS[a] ?? '#607d8b';
+                  const color = allianceColors[a] ?? '#607d8b';
                   const count = allianceCounts[a] ?? 0;
                   const pct = shapes.length ? (count / shapes.length) * 100 : 0;
                   return (

@@ -139,7 +139,11 @@ export default function LiveConstituency() {
   const resultData = allResults?.[name];
   const candidates = resultData?.candidates ?? [];
   const live = resultData?._live;
-  const hasLiveData = liveMeta && liveMeta.status !== 'awaiting';
+  const hasLiveData = liveMeta && (
+    liveMeta.status !== 'awaiting' ||
+    Object.keys(liveMeta.alliance_tally ?? {}).length > 0 ||
+    Object.keys(liveMeta.party_tally ?? {}).length > 0
+  );
   const isDeclared = live?.status === 'declared';
   const liveCandidates = detail?.candidates || live?.candidates;
 

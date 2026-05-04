@@ -10,7 +10,11 @@ import LiveTabBar from '../components/LiveTabBar';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 function useDistrictSummaries(data, districtMap, allResults, liveMeta, allianceColors) {
-  const hasLiveData = liveMeta && liveMeta.status !== 'awaiting';
+  const hasLiveData = liveMeta && (
+    liveMeta.status !== 'awaiting' ||
+    Object.keys(liveMeta.alliance_tally ?? {}).length > 0 ||
+    Object.keys(liveMeta.party_tally ?? {}).length > 0
+  );
   return useMemo(() => {
     if (!allResults) return {};
 
