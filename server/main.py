@@ -241,9 +241,15 @@ async def refresh_data():
             counting = sum(1 for c in constituencies.values() if c.get("status") == "counting")
             awaiting = TOTAL_CONSTITUENCIES - declared - counting
 
+            overall_status = (
+                "completed"
+                if declared == TOTAL_CONSTITUENCIES
+                else ("counting" if declared > 0 or counting > 0 else "awaiting")
+            )
+
             _cache.update({
                 "last_updated": datetime.now(timezone.utc),
-                "status": "counting" if counting > 0 else ("completed" if declared == TOTAL_CONSTITUENCIES else "awaiting"),
+                "status": overall_status,
                 "constituencies": constituencies,
                 "party_tally": party_tally,
                 "alliance_tally": alliance_tally,
