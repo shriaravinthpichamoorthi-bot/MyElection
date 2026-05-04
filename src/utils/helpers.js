@@ -15,7 +15,26 @@ export const PARTY_COLORS = {
 };
 
 export const PARTY_TO_ALLIANCE = {
-  // NDA
+  // Tamil Nadu — DMK Alliance
+  'Dravida Munnetra Kazhagam': 'DMK Alliance', DMK: 'DMK Alliance',
+  'Indian National Congress': 'DMK Alliance', INC: 'DMK Alliance',
+  'Communist Party of India': 'DMK Alliance', CPI: 'DMK Alliance',
+  'Communist Party of India (Marxist)': 'DMK Alliance', 'CPI(M)': 'DMK Alliance',
+  'Viduthalai Chiruthaigal Katchi': 'DMK Alliance', VCK: 'DMK Alliance',
+  'Marumalarchi Dravida Munnetra Kazhagam': 'DMK Alliance', MDMK: 'DMK Alliance',
+  'Indian Union Muslim League': 'DMK Alliance', IUML: 'DMK Alliance',
+  // Tamil Nadu — AIADMK
+  'All India Anna Dravida Munnetra Kazhagam': 'AIADMK', AIADMK: 'AIADMK', ADMK: 'AIADMK',
+  // Tamil Nadu — NDA
+  'Pattali Makkal Katchi': 'NDA', PMK: 'NDA',
+  'Desiya Murpokku Dravida Kazhagam': 'NDA', DMDK: 'NDA',
+  // Tamil Nadu — TVK
+  'Tamilaga Vettri Kazhagam': 'TVK', TVK: 'TVK',
+  // Tamil Nadu — AMMK
+  'Amma Makkal Munnettra Kazagam': 'AMMK', AMMK: 'AMMK',
+  // Tamil Nadu — NTK
+  'Nam Tamilar Katchi': 'NTK', NTK: 'NTK',
+  // NDA (Bihar / national)
   'Bharatiya Janata Party': 'NDA', BJP: 'NDA',
   'Janata Dal (United)': 'NDA', 'JD(U)': 'NDA',
   'Lok Janshakti Party (Ram Vilas)': 'NDA', 'LJP-RV': 'NDA',
