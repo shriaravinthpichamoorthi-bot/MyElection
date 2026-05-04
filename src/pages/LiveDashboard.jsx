@@ -164,19 +164,6 @@ export default function LiveDashboard({
       .sort((a, b) => b.value - a.value);
   }, [partyTally, allianceColors]);
 
-  // Group party tally by alliance for the companion pane
-  const partyBreakdown = useMemo(() => {
-    const groups = {};
-    Object.entries(partyTally)
-      .filter(([_, v]) => v > 0)
-      .sort((a, b) => b[1] - a[1])
-      .forEach(([party, seats]) => {
-        const alliance = PARTY_TO_ALLIANCE[party] || 'Others';
-        if (!groups[alliance]) groups[alliance] = [];
-        groups[alliance].push({ party, seats, color: allianceColors[alliance] || '#607d8b' });
-      });
-    return groups;
-  }, [partyTally, allianceColors]);
 
   if (loading) return <LoadingSpinner />;
   if (!allResults) return <div style={{ color: '#f87171', padding: 32 }}>Failed to load data.</div>;
@@ -260,7 +247,7 @@ export default function LiveDashboard({
           {/* Live Results by Party */}
           <div className="card" style={{ padding: '20px 24px' }}>
             <h2 style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-subtle)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 16 }}>
-              {declaredTitle || `Live Results — ${declared} Declared (By Party)`}
+              {declaredTitle || `Party Leads — ${Object.values(partyTally).reduce((a, b) => a + b, 0)} Constituencies`}
             </h2>
             {/* Stacked bar - by party */}
             <div style={{ display: 'flex', height: 24, borderRadius: 8, overflow: 'hidden', gap: 1, marginBottom: 16 }}>
@@ -308,42 +295,11 @@ export default function LiveDashboard({
       <div style={{ display: 'grid', gap: 16 }} id="dash-grid">
         <style>{`#dash-grid{grid-template-columns:1.4fr 1fr}@media(max-width:860px){#dash-grid{grid-template-columns:1fr}}`}</style>
 
-        {/* Left: Party Breakdown (moved from above) OR Nominations */}
-        {hasLiveData && Object.keys(partyBreakdown).length > 0 ? (
-          <div className="card" style={{ padding: '20px 24px' }}>
-            <h3 style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-subtle)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 16 }}>
-              Party Breakdown
-            </h3>
-            <div style={{ display: 'grid', gap: 20, gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))' }}>
-              {alliancesOrder.filter(a => partyBreakdown[a]).map(alliance => (
-                <div key={alliance}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
-                    <div style={{ width: 10, height: 10, borderRadius: 2, background: allianceColors[alliance] ?? '#607d8b' }} />
-                    <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{alliance}</span>
-                    <span style={{ fontSize: 12, color: 'var(--text-subtle)', marginLeft: 'auto' }}>{allianceTally[alliance] ?? 0} seats</span>
-                  </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                    {partyBreakdown[alliance].map(({ party, seats, color }) => (
-                      <Link key={party} to={`${basePath}/constituencies?party=${encodeURIComponent(party)}`}
-                        style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '5px 8px', borderRadius: 6, background: 'rgba(255,255,255,0.02)' }}
-                        onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
-                        onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                          <div style={{ width: 6, height: 6, borderRadius: '50%', background: color }} />
-                          <span style={{ fontSize: 13, color: 'var(--text-muted)' }}>{party}</span>
-                        </div>
-                        <span style={{ fontSize: 12, fontWeight: 700, color, fontVariantNumeric: 'tabular-nums' }}>{seats}</span>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        ) : (
+        {/* Left: Alliance nominations / leads */}
+        {(
           <div className="card" style={{ padding: '20px 24px' }}>
             <h2 style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-subtle)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 16 }}>
-              Alliance Nominations — {totalConstituencies} Constituencies
+              {hasLiveData ? `Alliance Leads — ${totalConstituencies} Constituencies` : `Alliance Nominations — ${totalConstituencies} Constituencies`}
             </h2>
             <div style={{ display: 'flex', height: 24, borderRadius: 8, overflow: 'hidden', gap: 1, marginBottom: 16 }}>
               {alliancesOrder.filter(a => constituencyNominations[a]).map(a => {
@@ -386,7 +342,7 @@ export default function LiveDashboard({
           </div>
         )}
 
-        {/* Right column: Quick links only (Election Status removed) */}
+        {/* Right column */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           <div className="card" style={{ padding: '20px 24px' }}>
             <h2 style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-subtle)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 14 }}>
