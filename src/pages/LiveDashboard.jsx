@@ -9,7 +9,27 @@ import { PARTY_COLORS, PARTY_TO_ALLIANCE } from '../utils/helpers';
 import LiveTabBar from '../components/LiveTabBar';
 import LoadingSpinner from '../components/LoadingSpinner';
 
-const TT = { contentStyle: { background: '#1e293b', border: '1px solid #475569', borderRadius: 10, color: '#f8fafc', fontSize: 12, boxShadow: '0 8px 24px rgba(0,0,0,0.5)' } };
+const TT = {
+  contentStyle: {
+    background: '#0f172a',
+    border: '1px solid #475569',
+    borderRadius: 10,
+    color: '#f8fafc',
+    fontSize: 12,
+    boxShadow: '0 8px 24px rgba(0,0,0,0.5)',
+    padding: '10px 12px',
+  },
+  labelStyle: {
+    color: '#cbd5e1',
+    fontWeight: 700,
+    marginBottom: 4,
+  },
+  itemStyle: {
+    color: '#f8fafc',
+    fontSize: 12,
+    padding: '2px 0',
+  },
+};
 
 const TN_ALLIANCES_ORDER = ['DMK Alliance', 'AIADMK', 'NTK', 'TVK', 'NDA', 'AMMK', 'Others', 'IND'];
 // NDA and AMMK are kept in order so pre-election nomination data still renders (they fold into AIADMK on election day)
@@ -398,45 +418,43 @@ export default function LiveDashboard({
             </h2>
             <span style={{ marginLeft: 'auto', fontSize: 11, color: 'var(--text-muted)' }}>sorted by margin ↑</span>
           </div>
-          <div style={{ display: 'grid', gap: 8, gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))' }}>
-            {swingSeats.map(c => {
-              const leadColor = allianceColors[c.leading_alliance] ?? '#607d8b';
-              const trailColor = allianceColors[c.trailing_alliance] ?? '#475569';
-              return (
-                <Link key={c.id} to={`${basePath}/${c.name.toLowerCase().replace(/\s+/g, '-')}`} style={{ textDecoration: 'none' }}>
-                  <div className="card" style={{ padding: '12px 14px', borderLeft: `3px solid ${leadColor}`, cursor: 'pointer' }}
-                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
-                    onMouseLeave={e => e.currentTarget.style.background = ''}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
-                      <span style={{ fontSize: 13, fontWeight: 700, color: '#e2e8f0' }}>{c.name}</span>
-                      <span style={{ fontSize: 13, fontWeight: 800, color: '#f87171', fontVariantNumeric: 'tabular-nums' }}>
-                        +{c.margin.toLocaleString('en-IN')}
-                      </span>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                        <div style={{ width: 7, height: 7, borderRadius: '50%', background: leadColor, flexShrink: 0 }} />
-                        <span style={{ fontSize: 12, color: '#cbd5e1', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                          {c.leading_candidate} <span style={{ color: leadColor, fontWeight: 600 }}>({c.leading_party})</span>
-                        </span>
-                      </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                        <div style={{ width: 7, height: 7, borderRadius: '50%', background: trailColor, flexShrink: 0 }} />
-                        <span style={{ fontSize: 12, color: 'var(--text-subtle)', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                          {c.trailing_candidate} <span style={{ color: trailColor }}>({c.trailing_party})</span>
-                        </span>
-                      </div>
-                    </div>
-                    {c.round && (
-                      <p style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 6 }}>
-                        Round {c.round}{c.total_rounds ? ` of ${c.total_rounds}` : ''}
-                        {c.status === 'declared' && <span style={{ color: '#34d399', marginLeft: 6, fontWeight: 600 }}>✓ Declared</span>}
-                      </p>
-                    )}
-                  </div>
-                </Link>
-              );
-            })}
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+              <thead>
+                <tr style={{ borderBottom: '1px solid #1e293b' }}>
+                  {['Constituency', 'Leader', 'Party', 'Trailer', 'Party', 'Margin', 'Round'].map(h => (
+                    <th key={h} style={{ padding: '8px 10px', textAlign: 'left', fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', whiteSpace: 'nowrap' }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {swingSeats.map(c => {
+                  const leadColor = allianceColors[c.leading_alliance] ?? '#607d8b';
+                  const trailColor = allianceColors[c.trailing_alliance] ?? '#475569';
+                  return (
+                    <tr key={c.id} style={{ borderBottom: '1px solid #0f172a', cursor: 'pointer' }}
+                      onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
+                      onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                      onClick={() => window.location.href = `${basePath}/${c.name.toLowerCase().replace(/\s+/g, '-')}`}>
+                      <td style={{ padding: '10px 10px', fontWeight: 600, color: '#e2e8f0', whiteSpace: 'nowrap' }}>{c.name}</td>
+                      <td style={{ padding: '10px 10px', color: '#cbd5e1', whiteSpace: 'nowrap' }}>{c.leading_candidate}</td>
+                      <td style={{ padding: '10px 10px', whiteSpace: 'nowrap' }}>
+                        <span style={{ padding: '2px 8px', borderRadius: 4, background: `${leadColor}22`, color: leadColor, fontWeight: 600, fontSize: 12 }}>{c.leading_alliance || c.leading_party}</span>
+                      </td>
+                      <td style={{ padding: '10px 10px', color: 'var(--text-subtle)', whiteSpace: 'nowrap' }}>{c.trailing_candidate}</td>
+                      <td style={{ padding: '10px 10px', whiteSpace: 'nowrap' }}>
+                        <span style={{ padding: '2px 8px', borderRadius: 4, background: `${trailColor}22`, color: trailColor, fontSize: 12 }}>{c.trailing_alliance || c.trailing_party}</span>
+                      </td>
+                      <td style={{ padding: '10px 10px', fontWeight: 800, color: '#f87171', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>+{c.margin.toLocaleString('en-IN')}</td>
+                      <td style={{ padding: '10px 10px', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
+                        {c.round ? `${c.round}${c.total_rounds ? `/${c.total_rounds}` : ''}` : '—'}
+                        {c.status === 'declared' && <span style={{ color: '#34d399', marginLeft: 6, fontSize: 11, fontWeight: 600 }}>✓</span>}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
         </div>
       )}
