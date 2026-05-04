@@ -97,7 +97,7 @@ function MapLegend({ allianceCounts, allianceColors }) {
 }
 
 export default function LiveMapView() {
-  const { loading: liveLoading, allResults, lastUpdated, liveMeta, mapTickMs, allianceColors } = useLiveResults();
+  const { loading: liveLoading, allResults, liveData, lastUpdated, liveMeta, mapTickMs, allianceColors } = useLiveResults();
   const { data, loading: dataLoading } = useData();
   const basePath = useLiveBasePath();
   const [geoJson, setGeoJson] = useState(null);
@@ -149,17 +149,18 @@ export default function LiveMapView() {
     return projectFeatures(geoJson.features, f => {
       const acNo = f.properties.AC_NO;
       const acName = f.properties.AC_NAME ?? '';
-      // Try AC_NO → name from 2021 data first (most reliable)
+      // Resolve canonical name for linking
       let canonicalName = acNoToName[acNo];
-      // Fall back to case-insensitive match against allResults keys
       if (!canonicalName) canonicalName = nameLookup[acName.toLowerCase()] ?? acName;
       const resultData = allResults[canonicalName];
-      const live = resultData?._live;
-      const leader = resultData?.candidates?.[0];
+
+      // Use AC_NO to look up live data directly — avoids fragile name matching
+      const live = liveData?.[String(acNo)];
       const hasVotes = live && (live.leading_votes ?? 0) > 0;
-      // Show alliance only when there are actual votes; grey out no-data constituencies
-      const alliance = hasVotes ? (live.leading_alliance ?? null) : (live ? null : (leader?.alliance ?? null));
-      const party = hasVotes ? (live.leading_party ?? null) : (live ? null : (leader?.party ?? null));
+
+      // Colour only when there are actual votes; leave blank otherwise
+      const alliance = hasVotes ? (live.leading_alliance ?? null) : null;
+      const party = hasVotes ? (live.leading_party ?? null) : null;
       const status = live?.status ?? 'awaiting';
       const margin = live?.margin ?? 0;
       return {
@@ -170,9 +171,10 @@ export default function LiveMapView() {
         status,
         margin,
         candidateCount: resultData?.candidates?.length ?? 0,
+        live,
       };
     });
-  }, [geoJson, allResults, acNoToName, nameLookup]);
+  }, [geoJson, allResults, liveData, acNoToName, nameLookup]);
 
   // Alliance counts for legend
   const allianceCounts = useMemo(() => {
@@ -186,7 +188,7 @@ export default function LiveMapView() {
     [shapes, selected, hovered]
   );
   const activeResult = activeShape ? allResults?.[activeShape.name] : null;
-  const activeLive = activeResult?._live;
+  const activeLive = activeShape?.live ?? activeResult?._live;
 
   if (liveLoading || dataLoading || mapLoading) return <LoadingSpinner />;
   if (!allResults) return <div style={{ color: '#f87171', padding: 32 }}>Failed to load live data.</div>;
