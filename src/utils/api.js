@@ -1,4 +1,4 @@
-const API_BASE = import.meta.env.VITE_API_URL || '';
+const API_BASE = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
 
 async function apiFetch(path, options = {}) {
   const url = API_BASE ? `${API_BASE}${path}` : path;
@@ -45,8 +45,9 @@ export function triggerRefresh(secret) {
 
 // ── Factory for creating API clients with custom base URLs ──
 export function createApiClient(baseUrl) {
+  const base = (baseUrl || '').replace(/\/$/, '');
   async function clientFetch(path, options = {}) {
-    const url = baseUrl ? `${baseUrl}${path}` : path;
+    const url = base ? `${base}${path}` : path;
     const res = await fetch(url, {
       ...options,
       headers: {
