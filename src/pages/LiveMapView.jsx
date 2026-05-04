@@ -156,9 +156,10 @@ export default function LiveMapView() {
       const resultData = allResults[canonicalName];
       const live = resultData?._live;
       const leader = resultData?.candidates?.[0];
-      // Use live data alliance if available, else nomination alliance
-      const alliance = live?.leading_alliance ?? leader?.alliance ?? null;
-      const party = live?.leading_party ?? leader?.party ?? null;
+      const hasVotes = live && (live.leading_votes ?? 0) > 0;
+      // Show alliance only when there are actual votes; grey out no-data constituencies
+      const alliance = hasVotes ? (live.leading_alliance ?? null) : (live ? null : (leader?.alliance ?? null));
+      const party = hasVotes ? (live.leading_party ?? null) : (live ? null : (leader?.party ?? null));
       const status = live?.status ?? 'awaiting';
       const margin = live?.margin ?? 0;
       return {
