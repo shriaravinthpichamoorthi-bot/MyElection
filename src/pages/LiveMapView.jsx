@@ -156,11 +156,11 @@ export default function LiveMapView() {
 
       // Use AC_NO to look up live data directly — avoids fragile name matching
       const live = liveData?.[String(acNo)];
-      const hasVotes = live && (live.leading_votes ?? 0) > 0;
+      const hasLead = live && !!live.leading_party;
 
-      // Colour only when there are actual votes; leave blank otherwise
-      const alliance = hasVotes ? (live.leading_alliance ?? null) : null;
-      const party = hasVotes ? (live.leading_party ?? null) : null;
+      // Colour when a leading party is known; leave blank otherwise
+      const alliance = hasLead ? (live.leading_alliance ?? null) : null;
+      const party = hasLead ? (live.leading_party ?? null) : null;
       const status = live?.status ?? 'awaiting';
       const margin = live?.margin ?? 0;
       return {
