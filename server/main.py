@@ -241,10 +241,14 @@ async def refresh_data():
             counting = sum(1 for c in constituencies.values() if c.get("status") == "counting")
             awaiting = TOTAL_CONSTITUENCIES - declared - counting
 
+            # Treat any constituency with a leading_party as counting, even if
+            # the ECI status string wasn't recognised by the scraper parser
+            has_results = any(c.get("leading_party") for c in constituencies.values())
+
             overall_status = (
                 "completed"
                 if declared == TOTAL_CONSTITUENCIES
-                else ("counting" if declared > 0 or counting > 0 else "awaiting")
+                else ("counting" if declared > 0 or counting > 0 or has_results else "awaiting")
             )
 
             _cache.update({

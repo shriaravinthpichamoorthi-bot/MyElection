@@ -127,9 +127,13 @@ export default function LiveDashboard({
 
   const totalConstituencies = propTotalConstituencies ?? (allResults ? Object.keys(allResults).length : 0);
 
-  const hasLiveData = liveMeta && liveMeta.status !== 'awaiting';
   const allianceTally = liveMeta ? (liveMeta.alliance_tally || {}) : {};
   const partyTally = liveMeta ? (liveMeta.party_tally || {}) : {};
+  const hasLiveData = liveMeta && (
+    liveMeta.status !== 'awaiting' ||
+    Object.keys(allianceTally).length > 0 ||
+    Object.keys(partyTally).length > 0
+  );
   const declared = liveMeta?.declared ?? 0;
   const counting = liveMeta?.counting ?? 0;
   const awaiting = liveMeta?.awaiting ?? totalConstituencies;

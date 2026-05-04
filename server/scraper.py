@@ -305,12 +305,13 @@ class ECIScraper:
                         pass
                 if "status" in col_map and col_map["status"] < len(texts):
                     status_raw = texts[col_map["status"]].lower().strip()
-                    # Normalize ECI status strings
-                    if status_raw in ("result declared", "declared"):
+                    # Normalize ECI status strings — use substring checks to handle
+                    # variations like "Counting Completed", "Result Declared", etc.
+                    if "declared" in status_raw or "completed" in status_raw:
                         result["status"] = "declared"
-                    elif status_raw in ("counting", "counting in progress"):
+                    elif "counting" in status_raw or "progress" in status_raw:
                         result["status"] = "counting"
-                    elif status_raw in ("awaiting", "awaiting result"):
+                    elif "awaiting" in status_raw:
                         result["status"] = "awaiting"
                     else:
                         result["status"] = status_raw
