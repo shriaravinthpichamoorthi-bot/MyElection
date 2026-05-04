@@ -231,7 +231,7 @@ export default function LiveMapView() {
               <rect width={VIEWBOX_WIDTH} height={VIEWBOX_HEIGHT} rx="16" fill="#020617" />
               <g>
                 {shapes.map(s => {
-                  const fill = s.alliance ? (`${allianceColors[s.alliance] ?? '#607d8b'}cc`) : '#1a2540';
+                  const fill = s.alliance ? (`${allianceColors[s.alliance] ?? '#607d8b'}cc`) : '#334155';
                   const isActive = s.name === (selected ?? hovered);
                   const stroke = isActive ? '#f8fafc' : '#0a0f1e';
                   return (
