@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Analytics as VercelAnalytics } from '@vercel/analytics/react';
 import { DataProvider } from './context/DataContext';
 import { LiveResultsProvider } from './context/LiveResultsContext';
 import { createApiClient } from './utils/api';
@@ -105,6 +106,7 @@ export default function App() {
               <Route path="*" element={<div className="text-center py-20 text-slate-400">Page not found</div>} />
             </Routes>
           </Layout>
+          <VercelAnalytics />
         </BrowserRouter>
       </LiveResultsProvider>
     </DataProvider>
